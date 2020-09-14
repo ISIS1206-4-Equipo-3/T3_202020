@@ -1,0 +1,343 @@
+:imagesdir: images
+
+=== Processors and Validators
+
+It has always been, and always will be, our position that opencsv should be configurable enough to process almost all csv files but be extensible so that users can write their own parsers and mappers for the situations where it cannot.
+However, over the last couple of years a number of feature requests, support requests or feature/support requests disguised as bug reports have made us realize that extensibility is not enough and we should allow hooks to allow for the _integration_ of user defined code to allow users another route for customization.
+So we have added hooks for validators and processors.
+
+Validators allow for the injection of code to provide additional checks of data over and above what opencsv provides.
+
+Processors allow for the injection of code to modify the data.
+
+By allowing integration, developers can inject code for their specific requirements
+without adding performance overhead and an unnecessary burden to the users who do not need them.
+
+*NOTE - Because a badly coded or malformed validator/processor can cause failure to process the csv file, any bug reports written about validators will be closed with the suggestion that they be reopened as support requests.
+We are glad to help you with opencsv and the integration of your validators with opencsv but the bugs in the validators you write are NOT bugs with opencsv.
+That and we have unit tests with all types of validators so we know the validator integration works as designed.
+Feel free to look at our unit tests if you are having issues with the validators or processors.*
+
+Here is a crude diagram of csv data showing where the different types of validators and processors are called.
+
+[ditaa,diagram-overview,format=png]
+....
+                   +-------------+
+                   |     CSV     |
+                   |   source    |
+                   +------+------+
+                          |
+                          |
+                          v
+                   +------+------+
+               +-->+ Java Reader |
+               |   +------+------+
+               |          |
+               |          |
+               |          v
+          More |  +-------+--------+   fails    +------------------------+
+           to  |  | Line Validator +----------->| CSVValidationException |
+          read |  +-------+--------+            +------------------------+
+               |          |
+               |          |
+               |          v
+               |   +-------------+
+               |   |  ICSVParser |
+               +---+      &      |
+                   |  CSVReader  |
+                   +------+------+
+                          |
+                          |
+                          v
+                  +-------+-------+
+                  |  RowProcessor |
+                  +-------+-------+
+                          |
+                          |
+                          v
+                  +-------+--------+   fails    +------------------------+
+                  | Row Validator  +----------->| CSVValidationException |
+                  +-------+--------+            +------------------------+
+                          |
+                          |
+                          v
+                  +-------+-------+  done    +-------+
+                  |    String[]   +--------->| Yay!! |
+                  +-------+-------+          +-------+
+                          |
+                     Want |
+                  objects |
+                          v
+                 +--------+---------+
+                 |  MappingStrategy |
+                 +--------+---------+
+                          |
+                          |
+                          v
+             +------------+------------+
+             |  PreAssignmentProcessor |
+             +------------+------------+
+                          |
+                          |
+                          v
+             +------------+--------------+   fails   +------------------------+
+             |  PreAssignmentValidator   +---------->| CSVValidationException |
+             +------------+--------------+           +------------------------+
+                          |
+                          |
+                          v
+                  +-------+-------+
+                  |    CsvToBean  +
+                  +-------+-------+
+                          |
+                          v
+                 +--------+--------+
+                 |       Bean      |
+                 +--------+--------+
+                          |
+                          v
+                 +--------+--------+
+                 |                 |  data inconsistent  +---------------------------------+
+                 |                 +-------------------->| CsvConstraintViolationException |
+                 |   BeanVerifier  |                     +---------------------------------+
+                 |                 |  data unwanted      +-------+
+                 |                 +-------------------->| false |
+                 +--------+--------+                     +-------+
+                          |
+                          v
+                 +--------+--------+
+                 |     User code   |
+                 +--------+--------+
+
+
+....
+
+==== Validators
+
+Validators allow users to create their own rules for validating data.
+
+===== LineValidator
+
+The LineValidator interface is for the creation of validators upon a single line from the Reader before it is processed.
+A LineValidator should only be used when your csv records take one and only one line (no carriage returns or new line characters in any of the fields) and any of the existing validations do not work for you - like the multiLineLimit that is set in the CSVReaderBuilder.
+
+Here is a sample Validator we created as a unit test:
+
+[source,java]
+----
+public class LineDoesNotHaveForbiddenString implements LineValidator {
+
+    private final String FORBIDDEN_STRING;
+    private final String MESSAGE;
+
+    public LineDoesNotHaveForbiddenString(String forbiddenString) {
+        this.FORBIDDEN_STRING = forbiddenString;
+        this.MESSAGE = "Line should not contain " + forbiddenString;
+    }
+
+    @Override
+    public boolean isValid(String line) {
+        if (line == null || FORBIDDEN_STRING == null) {
+            return true;
+        }
+
+        return !line.contains(FORBIDDEN_STRING);
+    }
+
+    @Override
+    public void validate(String line) throws CsvValidationException {
+        if (!isValid(line)) {
+            throw new CsvValidationException(MESSAGE);
+        }
+    }
+
+    String getMessage() {
+        return MESSAGE;
+    }
+}
+----
+
+And here is how it is integrated with opencsv:
+
+[source,java]
+----
+   private static final String BAD = "bad";
+   private static final String AWFUL = "awful";
+   private LineDoesNotHaveForbiddenString lineDoesNotHaveBadString;
+   private LineDoesNotHaveForbiddenString lineDoesNotHaveAwfulString;
+
+   @DisplayName("CSVReader with LineValidator with bad string")
+   @Test
+   public void readerWithLineValidatorWithBadString() throws IOException {
+      String lines = "a,b,c\nd,bad,f\n";
+      StringReader stringReader = new StringReader(lines);
+      CSVReaderBuilder builder = new CSVReaderBuilder(stringReader);
+      CSVReader csvReader = builder
+                .withLineValidator(lineDoesNotHaveAwfulString)
+                .withLineValidator(lineDoesNotHaveBadString)
+                .build();
+      assertThrows(CsvValidationException.class, () -> {
+            List<String[]> rows = csvReader.readAll();
+        });
+    }
+----
+
+===== RowValidator
+
+The RowValidator interface is for the creation of validators for an array of Strings that are supplied by the CSVReader after they have been processed.
+RowValidators should only be used if you have a very good understanding and control of the data being being processed, like the positions of the columns in the csv file.
+If you do not know the order, then RowValidator needs to be generic enough such that it can be applied to every element in the row.
+
+Here is an example of the integration of RowValidator with opencsv:
+
+[source,java]
+----
+    private static final Function<String[], Boolean> ROW_MUST_HAVE_THREE_COLUMNS = (x) -> {
+        return x.length == 3;
+    };
+    private static final RowValidator THREE_COLUMNS_ROW_VALIDATOR = new RowFunctionValidator(ROW_MUST_HAVE_THREE_COLUMNS, "Row must have three columns!");
+
+    @DisplayName("CSVReader populates line number of exception thrown by RowValidatorAggregator")
+    @Test
+    public void readerWithRowValidatorExceptionContainsLineNumber() {
+        String lines = "a,b,c\nd,f\n";
+        StringReader stringReader = new StringReader(lines);
+        CSVReaderBuilder builder = new CSVReaderBuilder(stringReader);
+        CSVReader csvReader = builder
+                .withRowValidator(THREE_COLUMNS_ROW_VALIDATOR)
+                .build();
+        try {
+            List<String[]> rows = csvReader.readAll();
+            fail("Expected a CsvValidationException to be thrown!");
+        } catch (CsvValidationException cve) {
+            assertEquals(2, cve.getLineNumber());
+        } catch (Exception e) {
+            fail("Caught an exception other than CsvValidationException!", e);
+        }
+    }
+----
+
+===== StringValidator and PreAssignmentValidator
+
+The StringValidator allows for the validation of a String prior to the conversion and assignment to a field in a bean.
+Of all the validators this is the most precise as the user knows the precise string that is going to be assigned to a given field and thus the only reason to make a validator generic is for reusability across multiple types of fields.
+
+A StringValidator is assigned to a field using the PreAssignmentValidator annotation.
+
+Example
+
+[source]
+====
+    @PreAssignmentValidator(validator = MustMatchRegexExpression.class, paramString = "^[0-9]{3,6}$")
+    @CsvBindByName(column = "id")
+    private int beanId;
+====
+
+==== Processors
+
+Processors allow for the modification of data, typically for the removal of undesired data or changing the defaults (empty string to null for example).
+Great care must be taken to ensure that the Processors written are fully tested as a malformed processor can make the data unusable.
+Because of the dangers posed by the processor there is no LineProcessor, only RowProcessor and PreAssignmentProcessor.
+
+===== RowProcessor
+
+RowProcessors take the array of String that is the entire row and will process it.
+It is up to the user to decide if only specific elements or the entire row is processed.
+The processColumnItem is currently not used directly in opencsv but was put in the interface directly in hopes that the implementors will use it when creating unit tests to verify their processors work correctly.
+
+Below is an example RowProcessor used in the opencsv unit tests.
+
+[source,java]
+----
+ public class BlankColumnsBecomeNull implements RowProcessor {
+
+    @Override
+    public String processColumnItem(String column) {
+        if (column == null || !column.isEmpty()) {
+            return column;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void processRow(String[] row) {
+        for (int i = 0; i < row.length; i++) {
+            row[i] = processColumnItem(row[i]);
+        }
+    }
+ }
+----
+
+And here is a test that shows the usage of the RowProcessor.
+
+[source,java]
+----
+    private static RowProcessor ROW_PROCESSOR = new BlankColumnsBecomeNull();
+    private static final String LINES = "a,, \n, ,\n";
+
+    @DisplayName("CSVReader with RowProcessor with good string")
+    @Test
+    public void readerWithRowProcessor() throws IOException, CsvException {
+
+        StringReader stringReader = new StringReader(LINES);
+        CSVReaderBuilder builder = new CSVReaderBuilder(stringReader);
+
+        CSVReader csvReader = builder
+                .withRowProcessor(ROW_PROCESSOR)
+                .build();
+
+        List<String[]> rows = csvReader.readAll();
+        assertEquals(2, rows.size());
+
+        String[] row1 = rows.get(0);
+        assertEquals(3, row1.length);
+        assertEquals("a", row1[0]);
+        assertNull(row1[1]);
+        assertEquals(" ", row1[2]);
+
+        String[] row2 = rows.get(1);
+        assertEquals(3, row2.length);
+        assertNull(row2[0]);
+        assertEquals(" ", row2[1]);
+        assertNull(row2[2]);
+    }
+----
+
+===== StringProcessor and PreAssignmentProcessor
+
+The StringProcessor allows for the processing of a String prior to the conversion and assignment to a field in a bean.
+Because the user knows the precise string that is going to be processed for a given field and thus the only reason to make a StringProcessor generic is for reusability across multiple types of fields.
+
+A StringProcessor is assigned to a field using the PreAssignmentProcessor annotation.
+
+Example
+
+[source,java]
+----
+public class ConvertEmptyOrBlankStringsToDefault implements StringProcessor {
+    String defaultValue;
+
+    @Override
+    public String processString(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+    @Override
+    public void setParameterString(String value) {
+        defaultValue = value;
+    }
+}
+----
+
+And an example of its use:
+
+[source]
+====
+    @PreAssignmentProcessor(processor = ConvertEmptyOrBlankStringsToDefault.class, paramString = "31415926")
+    @CsvBindByName(column = "big number", capture = "^[A-Za-z ]*value: (.*)$", format = "value: %s")
+    private long bigNumber;
+====

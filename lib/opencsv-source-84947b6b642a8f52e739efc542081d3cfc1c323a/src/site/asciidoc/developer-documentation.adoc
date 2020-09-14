@@ -1,0 +1,256 @@
+== Developer Documentation
+
+Here is an overview of how to use opencsv in your project.
+
+   * <<Quick start>>
+   * <<Upgrading from 4.x to 5.x>>
+   * <<Upgrading from 3.x to 4.x>>
+   * <<Core concepts>>
+      - <<Configuration>>
+      - <<Error handling>>
+      - <<Annotations>>
+   * <<Reading>>
+      - <<Parsing>>
+      - <<Reading into an array of strings>>
+      - <<Reading into beans>>
+   * <<Writing>>
+      - <<Writing from an array of strings>>
+      - <<Writing from a list of beans>>
+      - <<From a database table>>
+   * <<Validators>>
+   * <<Nuts and bolts>>
+      - <<Flow of data through opencsv>>
+      - <<Mapping strategies>>
+
+Once you have absorbed the overview of how opencsv works, please consult the
+well-maintained Javadocs for further details.
+
+=== Quick start
+
+This is limited to the easiest, most powerful way of using opencsv to allow you
+to hit the ground running.
+
+For reading, create a bean to harbor the information you want to read, annotate
+the bean fields with the opencsv annotations, then do this:
+
+[source, java]
+----
+     List<MyBean> beans = new CsvToBeanBuilder(FileReader("yourfile.csv"))
+       .withType(Visitors.class).build().parse();
+----
+
+For writing, create a bean to harbor the information you want to write, annotate
+the bean fields with the opencsv annotations, then do this:
+[source, java]
+----
+     // List<MyBean> beans comes from somewhere earlier in your code.
+     Writer writer = new FileWriter("yourfile.csv");
+     StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
+     beanToCsv.write(beans);
+     writer.close();
+----
+
+==== Even quicker start
+
+Starting with version 4.2, there's another handy way of reading CSV files that
+doesn't even require creating special classes. If your CSV file has headers,
+you can just initialize a CSVReaderHeaderAware and start reading the values
+out as a map:
+
+[source, java]
+----
+      Map<String, String> values = new CSVReaderHeaderAware(new FileReader("yourfile.csv")).readMap();
+----
+
+=== Upgrading from 4.x to 5.x
+
+5.0 is a major release because it breaks backward compatibility. What do you get
+for that? Here is a list of the improvements in opencsv 5.0.
+
+   * CsvToBean now has a stream() method to allow you to gracefully continue
+   processing your beans if you so choose. Since it bypasses internal copying
+   to a new list, it saves a smidgen of time and space.
+   * Similarly, StatefulBeanToCsv now accepts a Stream to a new write() method.
+   * Full support for the Java 8 Time API is included. Conversion to and from
+   all JDK-types that implement TemporalAccessor is included.
+   * In all annotations that accepted a conversion locale, it is now possible
+   to stipulate a different conversion locale for writing than the one used for
+   reading.
+   * Similarly, @CsvDate and @CsvNumber can now take a different format for
+   writing than reading.
+   * A new mapping strategy (FuzzyMappingStrategy) for reading into beans that
+   uses a fuzzy matching algorithm between header names and member variable
+   names to reduce your burden in annotating beans.
+   * The ability to split mappings from input/output columns to member
+   variables of multiple embedded beans has been added through the annotation
+   @CsvRecurse. One root bean is still necessary.
+   * If you write beans to a CSV output using the header name mapping strategy
+   without annotations, opencsv will now ignore any field named
+   "serialVersionUID" as long as the bean class implements Serializable.
+   * You can now instruct opencsv to ignore fields. This can be accomplished
+   with the new annotation @CsvIgnore, or, if you do not have source control
+   over the beans you use, with MappingStrategy.ignoreFields(). This last has a
+   default implementation in the MappingStrategy interface that throws an
+   UnsupportedOperationException, and all relevant builders include methods for
+   feeding this information to the mapping strategy.
+   * As a byproduct of refactoring the mapping strategies, there is now a base
+   class for mapping strategies that map header names:
+   HeaderNameBaseMappingStrategy. If you have derived a mapping strategy from
+   HeaderColumnNameMappingStrategy or HeaderColumnNameTranslateMappingStrategy,
+   it might be advantageous to you to use this base class.
+
+Here are the things you can expect to encounter during an upgrade and what to
+do about them.
+
+   * Java 8 is now the minimum supported version.
+   * Everything that was deprecated has been removed.
+   ** All non-essential constructors and CsvToBean.parse() methods have been removed. Please use the builder classes instead.
+   ** IterableCSVToBean and IterableCSVToBeanBuilder have both been removed. CsvToBean itself is iterable; use it instead.
+   ** Scads of methods that had to do with the internal implementation details of a mapping strategy have been removed from the interface MappingStrategy.
+      You probably never needed these anyway if you wrote your own mapping strategy.
+   ** The custom converter SplitOnWhitespace has been removed. Use the "split" parameter to the annotation in question.
+   * Writing non-annotated beans now produces capitalized headers like the rest of opencsv.
+   * Introspection has been replaced with Reflection. As a result, writing beans no longer fails if a getter is not available.
+   * If you created custom converters and declared them with the type parameter for the bean type (e.g. MyConverter<T> extends AbstractBeanField<T>) instead
+   of declaring them with a raw class (e.g. MyConverter extends AbstractBeanField), you will need to add one more type parameter for the type of the index
+   into multivalued fields (e.g. MyConverter<T, I> extends AbstractBeanField<T, I>).
+   * With the introduction of the LineValidator and RowValidator the following classes will throw CsvValidationException as well as an IOException
+   ** CSVReader
+   *** readNext
+   ** CSVIterator
+   *** constructor
+   ** CSVReaderHeaderAware
+   *** readNext
+   *** readMap
+   * Method signatures have changed in AbstractBeanField. If you have
+   overridden some of the more basic methods in this class, you may have to
+   change your methods appropriately. This will not affect ordinary custom
+   converters.
+   * Method signatures have changed in AbstractMappingStrategy, and one new
+   abstract method has been added. If you derive a mapping strategy directly
+   from AbstractMappingStrategy, you will have to change your method signatures
+   accordingly, if you overrode any of the affected methods, and you will need
+   to implement loadUnadornedFieldMap() to create the input/output to member
+   variable mapping in the absence of binding annotations.
+* The two constructors for StatefulBeanToCsv have a new parameter: the fields to ignore.
+If you are calling these directly instead of using the builders we provide, you will have to add the last argument.
+If you are not ignoring any fields, simply pass in null.
+
+And we have a new list of things that we have deprecated and plan to remove in 6.0, as well as what you can do about it.
+
+* MappingStrategy.isAnnotationDriven() is simply no longer necessary.
+It was always an internal implementation detail that has nothing to do with anything but two specific mapping strategies.
+We have made it a default method in the interface, so you can remove your code immediately if you have implemented your own mapping strategy.
+* LiteralComparator can be replaced by a few Comparators from Apache Commons Collections strung together.
+See the deprecation note for details.
+* CsvToBeanFilter should be replaced with BeanVerifier where possible.
+
+=== Upgrading from 3.x to 4.x
+
+4.0 is a major release because it breaks backward compatibility.
+What do you get for that?
+Here is a list of the improvements in opencsv 4.0.
+
+* We have rewritten the bean code to be multi-threaded so that reading from an input directly into beans is significantly faster.
+Performance benefits depend largely on your data and hardware, but our non-rigorous tests indicate that reading now takes a <em>third</em> of the time it used to.
+* We have rewritten the bean code to be multi-threaded so that writing from a list of beans is significantly faster.
+Performance benefits depend largely on your data and hardware, but our non-rigorous tests indicate that writing now takes <em>half</em> of the time it used to.
+* There is a new iterator available for iterating through the input into beans.
+This iterator is consistent in every way with the behavior of the code that reads all data sets at once into a list of beans.
+The old iterator did not support all features, like locales and custom converters.
+* opencsv now supports internationalization for all error messages it produces.
+The easiest way to benefit from this is to make certain the default locale is the one you want.
+Otherwise, look for the withErrorLocale() and setErrorLocale() methods in various classes.
+Localizations are provided for American English and German.
+Further submissions are welcome, but with a submission you enter into a life-long contract to provide updates for any new messages for the language(s) you submit.
+If you break this contract, you forefit your soul.
+   * Support for national character sets was added to ResultSetHelperService (NClob, NVarchar, NChar, LongNVarchar).
+
+Here are the things you can expect to encounter during an upgrade and what to
+do about them.
+
+   * Java 7 is now the minimum supported version. Tough noogies.
+   * Everything that was deprecated has been removed.
+      * BeanToCsv is no more. Please use StatefulBeanToCsv instead. The quick start guide above gives you an example.
+      * @CsvBind was replaced with @CsvBindByName. It really is as simple as search and replace.
+      * ConvertGermanToBooleanRequired was removed. Replace it with @CsvCustomBindByName(converter = ConvertGermanToBoolean.class, required = true).
+   * In the rare case that you have written your own mapping strategy:
+      * MappingStrategy now includes a method verifyLineLength(). If you derive your mapping strategy from one of ours, you're okay. Otherwise, you will have to implement it.
+      * In the rare case that you used opencsv 3.10, registerBeginningOfRecordForReading() and registerEndOfRecordForReading() were removed from MappingStrategy. They were the result of thought processes worthy of nothing more accomplished than a drunken monkey. I may write that because I wrote the bad code. If you derived your mapping strategy from one of ours, you're okay. Otherwise, you'll have to remove these methods.
+      * findDescriptor no longer includes "throws IntrospectionException" in its method signature. If you had it, you'll have to get rid of it. If you had it an needed it, you'll have to rewrite your code.
+      * There are now requirements for thread-safety imposed on certain methods in every mapping strategy. See the Javadoc for MappingStrategy for details.
+      * The method setErrorLocale() is now required. If you derive your implementation from one of ours, you're fine. If not, implement it, or make it a no-op.
+      * The method setType() is now required. If you derive your implementation from one of ours, you're fine. If not, implement it, or make it a no-op.
+   * MappingUtils was really meant to be for internal use, but of course we can't control that, so let it be said that:
+      * the class is now named OpencsvUtils, because it encompasses more than mapping, and
+      * the determineMappingStrategy() method now requires a locale for error messages. Null can be used for the default locale.
+   * The constructors for BeanFieldDate and BeanFieldPrimitiveType now require a locale for error messages. This is to avoid a proliferation of constructors or setters. These classes probably ought not to be used in your code directly, and probably ought to be final, but we still thought it best to inform you.
+   * The interface BeanField requires the method setErrorLocale(). Assuming you derive all of your BeanField implementations from AbstractBeanField, this does not affect you.
+
+And we have a new list of things that we have deprecated and plan to remove in
+5.0, as well as what you can do about it.
+
+   * IterableCSVToBean and IterableCSVToBeanBuilder have both been deprecated. CsvToBean itself is now iterable; use it instead.
+   * All constructors except the ones with the smallest (often nullary, using defaults for all values) and largest argument lists (which often have only package access) have been deprecated. The constructors in between have grown over the years as opencsv has added features, and they've become unwieldy. We encourage all of our users to use the builders we provide instead of the constructors.
+   * All variants of CsvToBean.parse() except the no-argument variant. Please use the builder we provide.
+   * MappingStrategy.findDescriptor() will no longer be necessary in 5.0 because the plan is to move to reflection completely and no longer use introspection.
+
+include::dev-coreConcepts.adoc[]
+
+include::dev-reading.adoc[]
+
+include::dev-writing.adoc[]
+
+include::dev-validation.adoc[]
+
+=== Nuts and bolts
+Now we start to poke around under the hood of opencsv.
+
+==== Flow of data through opencsv
+We have tried to hide all of the classes and how they work together in opencsv
+by providing you with builders, since you will rarely need to know all the details
+of opencsv's internal workings. But for those blessed few, here is how all of
+the pieces fit together for reading:
+
+. You must provide a Reader. This can be any Reader, but a FileReader or StringReader are the most common options.
+. If you wish, you may provide a parser (anything implementing ICSVParser).
+. The Reader can be wrapped in a CSVReader, which is also given the parser, if you have used your own. Otherwise, opencsv creates its own parser and even its own CSVReader. If you are reading into an array of strings, this is where the trail ends.
+. For those reading into beans, a MappingStrategy is the next step.
+. If you want filtering, you can create a CsvToBeanFilter or a BeanVerifier.
+. The MappingStrategy and the Reader or CSVReader and optionally the CsvToBeanFilter or BeanVerifier are passed to a CsvToBean, which uses them to parse input and populate beans.
+. If you have any custom converters, they are called for each bean field as CsvToBean is populating the bean fields.
+
+For writing it's a little simpler:
+
+. You must provide a Writer. This can be any Writer, but a FileWriter or a StringWriter are the most common options.
+. The Writer is wrapped in a CSVWriter. This is always done for you.
+. Create a MappingStrategy if you need to. Otherwise opencsv will automatically determine one.
+. Create a StatefulBeanToCsv, give it the MappingStrategy and the Writer.
+. If you have any custom converters, they are called for each bean field as the field is written out to the CSV file.
+
+==== Mapping strategies
+Opencsv has the concept of a mapping strategy. This is what translates a column from an input file into
+a field in a bean or vice versa. As we have already implied in the documentation of the
+annotations, there are two basic mapping strategies: Mapping by header name and
+mapping by column position. These are incarnated in HeaderColumnNameMappingStrategy
+and ColumnPositionMappingStrategy respectively. There is one more addendum to
+the header name mapping strategy: If you need to translate names from the input
+file to field names and you are not using annotations, you will need to use
+HeaderColumnNameTranslateMappingStrategy.
+
+If you use annotations and CsvToBeanBuilder (for reading) or StatefulBeanToCsv(Builder)
+(for writing), an appropriate mapping strategy is automatically determined, and
+you need worry about nothing else.
+
+Naturally, you can implement your own mapping strategies as you see fit. Your
+mapping strategy must implement the interface MappingStrategy, but has no other
+requirement. Feel free to derive a class from the existing implementations for
+simplicity.
+
+If you have implemented your own mapping strategy, or if you need to override
+the automatic selection of a mapping strategy, for example if you are reading the
+same bean with one mapping strategy, but writing it with a different one for
+conversion purposes, you need to let opencsv know which mapping strategy it must
+use. For reading, this is accomplished by passing an instance of your
+mapping strategy to CsvToBeanBuilder.withMappingStrategy(). For writing, pass
+your strategy to StatefulBeanToCsvBuilder.withMappingStrategy().
