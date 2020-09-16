@@ -76,9 +76,10 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 
 	@Override
 	public boolean contains(K key) {
-		Nodo act = getNodo(hash(key));
+		Nodo act = getNodo(key);
 		while(act!=null) {
 			if(act.darKey().equals(key)) return true;
+			act = act.darSiguiente();
 		}
 		return false;
 	}
