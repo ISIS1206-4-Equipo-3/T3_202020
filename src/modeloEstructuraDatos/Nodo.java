@@ -1,22 +1,25 @@
 package modeloEstructuraDatos;
 
-public class Nodo<T extends Comparable<T>> {
+public class Nodo {
 
-	private T dato;
-	private Nodo<T> siguiente;
+	private Object key;
+	private Object valor;
+	private Nodo siguiente;
 
-	public Nodo(T pDato) {
-		this.dato = pDato;
-		this.siguiente = null;
+	public Nodo(Object pkey, Object value) {
+		this.key = pkey;
+		this.valor = value;
 	}
 	
-	public void cambiarDato(T pDato) {dato = pDato;}
+	public void cambiarValor(Object pDato) {valor = pDato;}
 
-	public T darDato() { return dato; }
+	public Object darValor() { return valor; }
 	
-	public Nodo <T> darSiguiente() {return siguiente;}
+	public Object darKey() { return key; }
 	
-	public void setSiguiente (Nodo<T> pSiguiente) {siguiente = pSiguiente;}
+	public Nodo darSiguiente() {return siguiente;}
+	
+	public void setSiguiente (Nodo pSiguiente) {siguiente = pSiguiente;}
 	
 	public boolean tieneSiguiente () {
 		if(siguiente==null) return false;
