@@ -33,7 +33,25 @@ public class Controlador {
 				int opcion = Integer.parseInt(lectura.nextLine());
 				switch(opcion) {
 				case 1:
-					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
+					view.printMenuCargaDeDatos();
+					int opcionCargaDatos = Integer.parseInt(lectura.nextLine());
+					switch(opcionCargaDatos) {
+					case 1:
+						modelo.cargarDatosTablaHashLinearProbing(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS);
+						break;
+					case 2:
+						modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS);
+						break;
+					case 3:
+						modelo.cargarDatosTablaHashLinearProbing(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS);
+						modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS);
+						break;
+					case 4:
+						break;
+					default:
+						view.printErrorConRangoDeEntrada();
+						break;
+					}
 					break;
 				case 2:
 					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO

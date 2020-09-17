@@ -23,16 +23,9 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 	public void put(K key, V value) {
 		// TODO Auto-generated method stub
 		Integer hashKey = hash(key);
-		Nodo act = getNodo(hashKey);
 		Nodo nuevo = new Nodo(key, value);
-		if(act==null) {
-			valueList[hashKey] = nuevo;
-		}else {
-			while(act.darSiguiente()!=null) {
-				act = act.darSiguiente();
-			}
-			act.setSiguiente(nuevo);
-		}
+		nuevo.setSiguiente(getNodo(hashKey));
+		valueList[hashKey] = nuevo;
 	}
 
 	private Nodo getNodo(K key){return valueList[hash(key)];}
@@ -134,5 +127,18 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		return listaValores;
 
 	}
+	
+	public V darPrimerElemento() {
+		return (V) valueList[0].darValor();
+	}
+	public V darUltimoElemento() {
+		V rta = null;
+		Nodo act = valueList[(M-1)];
+		while(act.tieneSiguiente()) act = act.darSiguiente();
+		return (V) act.darValor();
+	}
+
+
+
 
 }

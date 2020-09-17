@@ -62,5 +62,13 @@ public class View {
 		System.out.println("\nGracias por usar nuestra base de datos :)");
 	}
 
+	public void printMenuCargaDeDatos() {
+		// TODO Auto-generated method stub
+		System.out.println("1. Cargar tabla de Hash con manejo de colisiones Linear Probing.");
+		System.out.println("2. Cargar tabla de Hash con manejo de colisiones SeparateChaining");
+		System.out.println("3. Cargar todas las anteriores");
+		System.out.println("4. <--- REGRESAR");
+	}
+
 
 }

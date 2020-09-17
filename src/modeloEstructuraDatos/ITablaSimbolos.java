@@ -2,7 +2,7 @@ package modeloEstructuraDatos;
 
 import java.util.List;
 
-public interface ITablaSimbolos <K extends Comparable<K>,V>{
+public interface ITablaSimbolos <K,V>{
 
 
 	/**
