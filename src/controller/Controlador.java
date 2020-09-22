@@ -60,7 +60,7 @@ public class Controlador {
 					int opcionConocerPeliculasAnoProduccion = Integer.parseInt(lectura.nextLine());
 					switch(opcionConocerPeliculasAnoProduccion) {
 					case 1:
-						view.printMessage(" \n Conocer películas según año de producción usando Linear Probing \n Dar año de producción: ");
+						view.printMessage(" \n Conocer peliculas segun ano de produccion usando Linear Probing \n Dar ano de produccion: ");
 						int production_year = Integer.parseInt(lectura.nextLine());
 						rtaPeli = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year);
 						if (!rtaPeli.isEmpty())
