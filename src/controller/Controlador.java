@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.List;
 import java.util.Scanner;
 
 import modeloLogico.Modelo;
@@ -25,6 +26,7 @@ public class Controlador {
 		Integer dato = null;
 		Comparable rta = " ";
 		Comparable respuesta = " ";
+		String rtaPeli = null;
 
 		while(!acabar)
 		{
@@ -60,10 +62,10 @@ public class Controlador {
 					case 1:
 						view.printMessage(" \n Conocer películas según año de producción usando Linear Probing \n Dar año de producción: ");
 						int production_year = Integer.parseInt(lectura.nextLine());
-						rta = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year);
-						if ( rta != null)
+						rtaPeli = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year);
+						if (!rtaPeli.isEmpty())
 						{
-							view.printMessage("Peliculas del año de produccion:  "+ production_year+ "\n"+ rta);
+							view.printMessage("Peliculas del año de produccion:  "+ production_year+ "\n"+ rtaPeli);
 						}
 						else
 						{
