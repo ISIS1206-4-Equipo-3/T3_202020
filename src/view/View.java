@@ -11,12 +11,12 @@ public class View {
 	
 	public void printMenu()
 	{
-		System.out.println("1. Realizar la carga de las fuentes de datos de las películas.");
+		System.out.println("1. Realizar la carga de las fuentes de datos de las peliÌ�culas.");
 		System.out.println("2. Descubrir productoras de cine (REQ1)");
 		System.out.println("3. Conocer a un director (REQ2)");
 		System.out.println("4. Conocer a un actor (REQ3)");
-		System.out.println("5. Entender un género cinematográfico (REQ4)");
-		System.out.println("6. Encontrar películas por país (REQ5)");
+		System.out.println("5. Entender un geÌ�nero cinematograÌ�fico (REQ4)");
+		System.out.println("6. Encontrar peliÌ�culas por paiÌ�s (REQ5)");
 		System.out.println("7. Informacion de creadores.");
 		System.out.println("8. Cambiar datos a cargar");
 		System.out.println("9. EXIT");
@@ -44,7 +44,7 @@ public class View {
 	
 	public void printErrorConRangoDeEntrada() {
 		// TODO Auto-generated method stub
-		System.out.println("\n++CAUTION: Ha introducido un número que no está dentro del menú. Opcion invalida \n");
+		System.out.println("\n++CAUTION: Ha introducido un nÃºmero que no estÃ¡ dentro del menÃº. Opcion invalida \n");
 	}
 	
 	public void printErrorConNumeroDeEntrada() {
@@ -70,5 +70,13 @@ public class View {
 		System.out.println("4. <--- REGRESAR");
 	}
 
+	public void printMenuPeliculasAnoProduccion()
+	{
+		System.out.println("1.Conocer películas que pertenecen a una compañía de producción en un año específico utilizando manejo de colisiones por Linear Probing.");
+		System.out.println("2. Conocer películas que pertenecen a una compañía de producción en un año específico utilizando manejo de colisiones por SeparateChaining");
+		System.out.println("3. EXIT");
+	}
+	
+	
 
 }

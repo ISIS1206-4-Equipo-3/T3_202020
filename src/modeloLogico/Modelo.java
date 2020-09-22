@@ -156,4 +156,17 @@ public class Modelo {
 		}
 	}
 
+	public String conocerPeliculasAnoProduccionLinearProbing(int production_year) {
+		
+		return null;
+	}
+
+	public void conocerPeliculasAnoProduccionSeparateChaining() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+
 }

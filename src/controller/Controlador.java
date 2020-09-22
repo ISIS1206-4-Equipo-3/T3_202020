@@ -54,7 +54,31 @@ public class Controlador {
 					}
 					break;
 				case 2:
-					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
+					view.printMenuPeliculasAnoProduccion();
+					int opcionConocerPeliculasAnoProduccion = Integer.parseInt(lectura.nextLine());
+					switch(opcionConocerPeliculasAnoProduccion) {
+					case 1:
+						view.printMessage(" \n Conocer películas según año de producción usando Linear Probing \n Dar año de producción: ");
+						int production_year = Integer.parseInt(lectura.nextLine());
+						rta = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year);
+						if ( rta != null)
+						{
+							view.printMessage("Peliculas del año de produccion:  "+ production_year+ "\n"+ rta);
+						}
+						else
+						{
+							view.printMessage("Ninguna pelicula fue producida en el año asignado");
+						}							
+						break;
+					case 2:
+						modelo.conocerPeliculasAnoProduccionSeparateChaining();
+						break;
+					case 3:
+						break;
+					default:
+						view.printErrorConRangoDeEntrada();
+						break;
+					}
 					break;
 				case 3:
 					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
