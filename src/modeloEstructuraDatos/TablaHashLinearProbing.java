@@ -168,7 +168,9 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 		String director;
 		String info = "";
 		if (this.size()!=0) {
-			if (this.get(key)!=null) {
+			if (this.get(key)==null) 
+				System.out.println("No existen peliculas con las características dadas");
+			else {
 				for (int i = 0; i <listaLlaves.length; i++) {
 					if (listaLlaves[i].equals(key.toString()) ) {
 						peli = (Pelicula) listaValores[i];
@@ -183,7 +185,7 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 	}	
 
 	    
-	}
+}
 	
 
 }
