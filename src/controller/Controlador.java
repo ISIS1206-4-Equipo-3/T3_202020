@@ -125,6 +125,9 @@ public class Controlador {
 				case 9:
 					acabar=true;
 					break;
+				case 10:
+					modelo.pruebasDeDesempeno();
+					break;
 				default:
 					view.printErrorConRangoDeEntrada();
 					break;
@@ -133,7 +136,8 @@ public class Controlador {
 			}catch (Exception e) {
 				if(e.getClass().equals(java.lang.NumberFormatException.class)) view.printErrorConNumeroDeEntrada();
 				else {
-				view.printErrorDesconocido();
+					view.printErrorDesconocido();
+					e.printStackTrace();
 					
 					}
 				

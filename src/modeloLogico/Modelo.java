@@ -185,7 +185,7 @@ public class Modelo {
 
 	public void conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
 		 tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
-		
+		 System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
 	}
 
 	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
@@ -194,7 +194,53 @@ public class Modelo {
 		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
 	}
 	
-	
+	public void pruebasDeDesempeno()
+	{
+		System.out.println("Prueba de linear Probing, 1000 consultas, 800 existentes, 200 inexistentes");
+		String[] existentes = tablaLinearProbing.pruebaExistentes();
+		int[] inexistentes = tablaLinearProbing.pruebaInexistentes();
+		long startTime = System.nanoTime();
+		for(int i =0; i<200; i++)
+		{
+			tablaLinearProbing.get(inexistentes[i]);
+		}
+		System.out.println("Dalke");
+		for(int j=0 ; j<800; j++)
+		{
+			tablaLinearProbing.get(existentes[j]);
+		}
+		long endTime = System.nanoTime();
+		System.out.println("Tiempo que tardo la prueba en Linear Probing : " + (endTime-startTime)/1e6 + " ms \n\n");
+		
+		System.out.println("Prueba de Separate Chaining, 1000 consultas, 800 existentes, 200 inexistentes");
+		String[] llaves = tablaSeparateChaining.existentes();
+		long startTime2 = System.nanoTime();
+		for(int i =0; i < 200; i++)
+		{
+			tablaSeparateChaining.get((int)Math.random()*100000);
+		}
+		for(int j=0 ; j<800; j++)
+		{
+			tablaSeparateChaining.get(llaves[j]);
+		}
+		long endTime2 = System.nanoTime();
+		System.out.println("Tiempo que tardo la prueba en Separate Chaining : " + (endTime2-startTime2)/1e6 + " ms \n\n");
+		
+	}
 	
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

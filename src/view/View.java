@@ -18,8 +18,9 @@ public class View {
 		System.out.println("5. Entender un genero cinematografico (REQ4)");
 		System.out.println("6. Encontrar peliculas por pais (REQ5)");
 		System.out.println("7. Informacion de creadores.");
-		System.out.println("8. Cambiar datos a cargar");
+		System.out.println("8. Cambiar datos a cargar");		
 		System.out.println("9. EXIT");
+		System.out.println("10. Pruebas de desempeno");
 	}
 
 	public void printMessage(String mensaje) {

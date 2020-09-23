@@ -31,6 +31,21 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 	private Nodo getNodo(K key){return valueList[hash(key)];}
 	private  Nodo getNodo (Integer hashKey){return valueList[hashKey];}
 	
+	public String[] existentes()
+	{
+		String[] llaves = new String[800];
+		for(int i =0; i < 800; i++ )
+		{
+			int number = (int)(Math.random()*M);
+			while(valueList[number] ==null)
+			{
+				number = (int)(Math.random()*M);
+			}
+			Pelicula p = (Pelicula)valueList[number].darValor();
+			llaves[i] = p.getCompania() + (p.getLanzamiento().getYear()+1900);
+		}
+		return llaves;
+	}
 	public void conocerPeliculasCompania(K key)
 	{
 
@@ -158,7 +173,7 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		return (V) act.darValor();
 	}
 
-
+	
 
 
 }

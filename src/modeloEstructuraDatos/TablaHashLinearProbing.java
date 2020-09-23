@@ -43,7 +43,7 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 			put(key, value);
 		}
 	}
-	
+
 	private void reHash() {
 		K[] listaAntiguaLlaves = listaLlaves;
 		V[] listaAntiguaValores = listaValores;
@@ -62,9 +62,14 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 		int hashKey = hash(key);
 		int cantidadDeDatosPasados = 0;
 		while(cantidadDeDatosPasados<M) {
+			if(listaLlaves[hashKey]==null) 
+			{
+				return null;
+			}
 			if(listaLlaves[hashKey].equals(key)) {
 				return listaValores[hashKey];
-			}else {
+			}
+			else {
 				hashKey = (hashKey+1)%M;
 				cantidadDeDatosPasados ++;
 			}
@@ -159,6 +164,41 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 				{return listaValores[i];}
 		}
 		return listaValores[1000];
+	}
+	public int[] pruebaInexistentes()
+	{
+		int[] container = new int[200];
+		boolean seLLeno = false;
+		int j = 0; 
+		
+		for(int i =0; i<M && j <200; i ++)
+		{
+			if(listaValores[i]==null)
+			{
+				container[j] = i;
+				j++;
+			}
+			i++;
+		}
+		return container;
+	
+	}
+	public String[] pruebaExistentes()
+	{
+		String[] container = new String[800];
+		boolean seLLeno = false;
+		int j = 0; 
+		
+		for(int i =0; i<M && j <800; i ++)
+		{
+			if(listaValores[i]!=null)
+			{
+				container[j] = (String)listaLlaves[i];
+				j++;
+			}
+			i++;
+		}
+		return container;
 	}
 
 	public void conocerPeliculasAnoProduccionLinearProbing(K key) {
