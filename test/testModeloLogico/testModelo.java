@@ -27,33 +27,34 @@ public class testModelo {
 		
 	}
 	@Test
-	void testModelo() {
+	public void testModelo() {
 		setUp1();
 		assertNotNull(modelo.tablaLinearProbing);
 		
 	}
 
 	@Test
-	void testCargarDatosTablaHashLinearProbing() {
+	public void testCargarDatosTablaHashLinearProbing() {
 		setUp1();
 		assertNotNull(modelo.tablaLinearProbing);
 	}
 
 	@Test
-	void testCargarDatosTablaHashSeparateChaining() {
+	public void testCargarDatosTablaHashSeparateChaining() {
 		setUp2();
 		assertNotNull(modelo.tablaSeparateChaining);
 	}
 
 	@Test
-	void testConocerPeliculasAnoProduccionLinearProbing() {
+	public void testConocerPeliculasAnoProduccionLinearProbing() {
 		setUp1();
-		assertNotNull(modelo.tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(inLoops2006);
+		assertNotNull(modelo.tablaLinearProbing);
 	}
 
 	@Test
-	void testConocerPeliculasAnoProduccionSeparateChaining() {
-		fail("Not yet implemented");
+	public void testConocerPeliculasAnoProduccionSeparateChaining() {
+		setUp1();
+		assertEquals(null,modelo.tablaSeparateChaining);
 	}
 
 }
