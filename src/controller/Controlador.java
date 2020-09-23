@@ -126,7 +126,13 @@ public class Controlador {
 					acabar=true;
 					break;
 				case 10:
+					try {
 					modelo.pruebasDeDesempeno();
+					}
+					catch (Exception e)
+					{
+						view.printMessage("No se han cargado ambas tablas, por favor cargarlas antes de las pruebas de  desempeno. \n ");
+					}
 					break;
 				default:
 					view.printErrorConRangoDeEntrada();

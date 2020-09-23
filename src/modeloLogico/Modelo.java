@@ -194,8 +194,15 @@ public class Modelo {
 		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
 	}
 	
-	public void pruebasDeDesempeno()
+	public void pruebasDeDesempeno() throws NullPointerException
 	{
+		if(tablaLinearProbing.isEmpty() || tablaSeparateChaining.isEmpty())
+		{
+			throw new NullPointerException();
+		}
+		
+			
+			
 		System.out.println("Prueba de linear Probing, 1000 consultas, 800 existentes, 200 inexistentes");
 		String[] existentes = tablaLinearProbing.pruebaExistentes();
 		int[] inexistentes = tablaLinearProbing.pruebaInexistentes();
@@ -211,6 +218,7 @@ public class Modelo {
 		}
 		long endTime = System.nanoTime();
 		System.out.println("Tiempo que tardo la prueba en Linear Probing : " + (endTime-startTime)/1e6 + " ms \n\n");
+		System.out.println("Tiempo promedio de realizar una consulta en Linear Probing : " + (endTime-startTime)/1e9 + " ms \n\n");
 		
 		System.out.println("Prueba de Separate Chaining, 1000 consultas, 800 existentes, 200 inexistentes");
 		String[] llaves = tablaSeparateChaining.existentes();
@@ -225,7 +233,7 @@ public class Modelo {
 		}
 		long endTime2 = System.nanoTime();
 		System.out.println("Tiempo que tardo la prueba en Separate Chaining : " + (endTime2-startTime2)/1e6 + " ms \n\n");
-		
+		System.out.println("Tiempo promedio de realizar una consulta en Separate Chaining : " + (endTime2-startTime2)/1e9 + " ms \n\n");
 	}
 	
 
