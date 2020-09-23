@@ -1,11 +1,15 @@
 package modeloEstructuraDatos;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 
-	public K[] listaLlaves;
+
+public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
+	
+
+	K[] listaLlaves;
 	V[] listaValores;
 	int M;
 	
@@ -15,7 +19,7 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 		listaLlaves = (K[]) new Object[pCapacidadInicial];
 	}
 	
-	public int hash (K key) {return ((key.hashCode() & 0x7fffffff) % M);}
+	private int hash (K key) {return ((key.hashCode() & 0x7fffffff) % M);}
 			
 	@Override
 	public void put(K key, V value) {
@@ -157,5 +161,34 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 		return listaValores[1000];
 	}
 
+	public String conocerPeliculasAnoProduccionLinearProbing(K key) {
+		System.out.println("aaaaaa");
+		Pelicula peli = null;
+		String titulo;
+		Date año;
+		String director;
+		String info = "";
+//		if (this.size()!=0) {
+			if (this.get(key)!=null) {
+				for (int i = 0; i <listaLlaves.length; i++) {
+					if (listaLlaves[i].equals(key.toString()) ) {
+						peli = (Pelicula) listaValores[i];
+						peli.imprimirPelicula();
+//						titulo = peli.getTitulo();
+//						año = peli.getLanzamiento();
+//						director = peli.getNombreDirector();
+//						info += "|"+ titulo + "|" + año + "|" + director;
+					}
+			}
+
+		}
+		
+		
+//	}	
+		 System.out.println(info);
+		return info;
+	    
+	}
+	
 
 }

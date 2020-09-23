@@ -26,7 +26,7 @@ public class Controlador {
 		Integer dato = null;
 		Comparable rta = " ";
 		Comparable respuesta = " ";
-		String rtaPeli = null;
+		String rtaPeli = " ";
 
 		while(!acabar)
 		{
@@ -65,7 +65,7 @@ public class Controlador {
 						view.printMessage(" \n Dar nombre de la compania: ");
 						String company_name = lectura.nextLine();
 						rtaPeli = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year, company_name);
-						if (!rtaPeli.isEmpty())
+						if (!rtaPeli.equals(""))
 						{
 							view.printMessage("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n"+ rtaPeli);
 						}
@@ -132,7 +132,11 @@ public class Controlador {
 
 			}catch (Exception e) {
 				if(e.getClass().equals(java.lang.NumberFormatException.class)) view.printErrorConNumeroDeEntrada();
-				else { view.printErrorDesconocido();}
+				else {
+					view.printErrorDesconocido();
+					
+					}
+				
 			}
 
 		}
