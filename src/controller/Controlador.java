@@ -64,7 +64,7 @@ public class Controlador {
 						int production_year = Integer.parseInt(lectura.nextLine());
 						view.printMessage(" \n Dar nombre de la compania: ");
 						String company_name = lectura.nextLine();
-						rtaPeli = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year, company_name);
+						 modelo.conocerPeliculasAnoProduccionLinearProbing(production_year, company_name);
 						if (!rtaPeli.equals(""))
 						{
 							view.printMessage("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n"+ rtaPeli);

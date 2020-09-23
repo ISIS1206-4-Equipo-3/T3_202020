@@ -161,32 +161,27 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 		return listaValores[1000];
 	}
 
-	public String conocerPeliculasAnoProduccionLinearProbing(K key) {
-		System.out.println("aaaaaa");
+	public void conocerPeliculasAnoProduccionLinearProbing(K key) {
 		Pelicula peli = null;
 		String titulo;
 		Date año;
 		String director;
 		String info = "";
-//		if (this.size()!=0) {
+		if (this.size()!=0) {
 			if (this.get(key)!=null) {
 				for (int i = 0; i <listaLlaves.length; i++) {
 					if (listaLlaves[i].equals(key.toString()) ) {
 						peli = (Pelicula) listaValores[i];
 						peli.imprimirPelicula();
-//						titulo = peli.getTitulo();
-//						año = peli.getLanzamiento();
-//						director = peli.getNombreDirector();
-//						info += "|"+ titulo + "|" + año + "|" + director;
+
 					}
 			}
 
 		}
 		
 		
-//	}	
-		 System.out.println(info);
-		return info;
+	}	
+
 	    
 	}
 	
