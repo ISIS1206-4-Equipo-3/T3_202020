@@ -1,24 +1,48 @@
 package testModeloLogico;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import modeloLogico.Modelo;
 class testModelo {
 
+	private Modelo modelo;
+	
+	public void setUp1()
+	{
+		modelo = new Modelo();
+		modelo.cargarDatosTablaHashLinearProbing(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS);
+	
+		
+	}
+	public void setUp2()
+	{
+		modelo = new Modelo();
+		modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS);
+		
+	}
 	@Test
 	void testModelo() {
-		fail("Not yet implemented");
+		setUp1();
+		assertNotNull(modelo.tablaLinearProbing);
+		
 	}
 
 	@Test
 	void testCargarDatosTablaHashLinearProbing() {
-		fail("Not yet implemented");
+		setUp1();
+		assertNotNull(modelo.tablaLinearProbing);
 	}
 
 	@Test
 	void testCargarDatosTablaHashSeparateChaining() {
-		fail("Not yet implemented");
+		setUp2();
+		assertNotNull(modelo.tablaSeparateChaining);
 	}
 
 	@Test

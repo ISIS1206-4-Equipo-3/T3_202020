@@ -18,8 +18,8 @@ import modeloEstructuraDatos.TablaHashSeparateChaining;
 
 public class Modelo {
 
-	TablaHashLinearProbing tablaLinearProbing;
-	TablaHashSeparateChaining tablaSeparateChaining;
+	public TablaHashLinearProbing tablaLinearProbing;
+	public	TablaHashSeparateChaining tablaSeparateChaining;
 
 	//Estos atributos se encargan de la lectura de los .CSV
 	private FileReader archivoPrincipal;
