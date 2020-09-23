@@ -1,8 +1,12 @@
 package modeloEstructuraDatos;
 
+import java.util.Date;
+
 public class Pelicula implements Comparable<Pelicula> {
 	
-	private String lanzamiento;
+	private String compania;
+	
+	private Date lanzamiento;
 	
 	private String titulo;
 
@@ -18,8 +22,9 @@ public class Pelicula implements Comparable<Pelicula> {
 
 	private String[] genero;
 	
-	public Pelicula(String pLanzamiento, String pTitulo, int pId, String director, int numVotos, double promedioVotos,  String actor1, String actor2, String actor3, String actor4, String actor5, String pGenero )
+	public Pelicula(String pCompania, Date pLanzamiento, String pTitulo, int pId, String director, int numVotos, double promedioVotos,  String actor1, String actor2, String actor3, String actor4, String actor5, String pGenero )
 	{
+		compania = pCompania;
 		lanzamiento = pLanzamiento;
 		titulo = pTitulo;
 		id = pId;
@@ -61,7 +66,7 @@ public class Pelicula implements Comparable<Pelicula> {
 
 
 
-	public String getLanzamiento() {
+	public Date getLanzamiento() {
 		return lanzamiento;
 	}
 
@@ -70,8 +75,27 @@ public class Pelicula implements Comparable<Pelicula> {
 
 
 
-	public void setLanzamiento(String lanzamiento) {
+	public String getCompania() {
+		return compania;
+	}
+
+
+
+
+
+
+	public void setCompania(String compania) {
+		this.compania = compania;
+	}
+
+
+
+
+
+
+	public void setLanzamiento(Date lanzamiento) {
 		this.lanzamiento = lanzamiento;
+		
 	}
 
 

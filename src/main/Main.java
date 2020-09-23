@@ -7,5 +7,6 @@ public class Main {
 	{
 		Controlador controller = new Controlador();
 		controller.run();
+		
 	}	
 }

@@ -1,7 +1,10 @@
 package modeloLogico;
 
 import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.opencsv.CSVParser;
@@ -33,6 +36,7 @@ public class Modelo {
 	private final static int COLUMNA_TITULO = 34 ;
 	private final static int COLUMNA_GENERO = 20;
 	private final static int COLUMNA_RELEASE_DATE = 28 ;
+	private final static int COLUMNA_COMPANY = 26 ;
 	private final static int COLUMNA_ACTOR_1 = 1 ;
 	private final static int COLUMNA_ACTOR_2 = 3 ;
 	private final static int COLUMNA_ACTOR_3 = 5 ;
@@ -68,7 +72,7 @@ public class Modelo {
 		try {
 			long startTime = System.nanoTime();
 			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria);
-			tablaLinearProbing = new TablaHashLinearProbing<Integer, Pelicula>(tamanoArchivoFilas);
+			tablaLinearProbing = new TablaHashLinearProbing<String, Pelicula>(tamanoArchivoFilas);
 			System.out.println("Se ha creado una tabla de hash con manejo de colisiones linear probing de tamano " + tamanoArchivoFilas);
 			CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
 			archivoPrincipal = new FileReader(pRutaPrincipal);
@@ -84,18 +88,28 @@ public class Modelo {
 					int numVotos = Integer.parseInt(lineaSecundaria[18]);
 					double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
 
+					try
+					{
+					DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+					Date lanzamiento = formato.parse(lineaSecundaria[10]);
+					
 					String director = lineaPrincipal[COLUMNA_DIRECTORES];
 					String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
 					String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
 					String actor3 = lineaPrincipal[COLUMNA_ACTOR_3];
 					String actor4 = lineaPrincipal[COLUMNA_ACTOR_4];
 					String actor5 = lineaPrincipal[COLUMNA_ACTOR_5];
+					String compania = lineaSecundaria[8];
 					String genero = lineaSecundaria[2];
 					String titulo = lineaSecundaria[16];
-					String lanzamiento = lineaSecundaria[10];
-					Pelicula anadir = new Pelicula(lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
-					tablaLinearProbing.put(id, anadir);
+					Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
+					tablaLinearProbing.put(compania+(lanzamiento.getYear()+1900), anadir);
 					contador++;
+					}
+					catch (Exception e)
+					{
+						
+					}
 				}
 			}
 			long endTime = System.nanoTime();
@@ -116,7 +130,7 @@ public class Modelo {
 		try {
 			long startTime = System.nanoTime();
 			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria)/5;
-			tablaSeparateChaining = new TablaHashSeparateChaining<Integer, Pelicula>(tamanoArchivoFilas);
+			tablaSeparateChaining = new TablaHashSeparateChaining<String, Pelicula>(tamanoArchivoFilas);
 			System.out.println("Se ha creado una tabla de hash con manejo de colisiones linear probing de tamano " + tamanoArchivoFilas);
 			CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
 			archivoPrincipal = new FileReader(pRutaPrincipal);
@@ -130,17 +144,21 @@ public class Modelo {
 				int id = Integer.parseInt(lineaPrincipal[0]);
 				int numVotos = Integer.parseInt(lineaSecundaria[18]);
 				double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
+				
+
 				String director = lineaPrincipal[COLUMNA_DIRECTORES];
 				String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
 				String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
 				String actor3 = lineaPrincipal[COLUMNA_ACTOR_3];
 				String actor4 = lineaPrincipal[COLUMNA_ACTOR_4];
 				String actor5 = lineaPrincipal[COLUMNA_ACTOR_5];
+				String compania = lineaSecundaria[8];
 				String genero = lineaSecundaria[2];
 				String titulo = lineaSecundaria[16];
-				String lanzamiento = lineaSecundaria[10];
-				Pelicula anadir = new Pelicula(lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
-				tablaSeparateChaining.put(id, anadir);
+				DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				Date lanzamiento = formato.parse(lineaSecundaria[10]);
+				Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
+				tablaSeparateChaining.put(compania+String.valueOf(lanzamiento.getYear()), anadir);
 				contador++;
 
 			}
