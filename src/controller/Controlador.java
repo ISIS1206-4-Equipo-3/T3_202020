@@ -75,7 +75,11 @@ public class Controlador {
 						}							
 						break;
 					case 2:
-						modelo.conocerPeliculasAnoProduccionSeparateChaining();
+						view.printMessage(" \n Conocer peliculas segun ano de produccion usando Separate Chaining \n Dar ano de produccion: ");
+						int production_year2 = Integer.parseInt(lectura.nextLine());
+						view.printMessage(" \n Dar nombre de la compania: ");
+						String company_name2 = lectura.nextLine();
+						modelo.conocerPeliculasAnoProduccionSeparateChaining(production_year2, company_name2);
 						break;
 					case 3:
 						break;

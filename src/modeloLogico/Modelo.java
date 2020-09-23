@@ -160,7 +160,7 @@ public class Modelo {
 				String genero = lineaSecundaria[2];
 				String titulo = lineaSecundaria[16];
 				Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
-				tablaSeparateChaining.put(compania+String.valueOf(lanzamiento.getYear()), anadir);
+				tablaSeparateChaining.put(compania+(lanzamiento.getYear()+1900), anadir);
 				contador++;
 				}
 				catch (Exception e)
@@ -210,9 +210,9 @@ public class Modelo {
 		return info;
 	}
 
-	public void conocerPeliculasAnoProduccionSeparateChaining() 
+	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
 	{
-		
+		tablaSeparateChaining.conocerPeliculasCompania(company_name+production_year);
 		
 	}
 	

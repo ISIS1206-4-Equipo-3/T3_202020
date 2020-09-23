@@ -245,7 +245,8 @@ public class Pelicula implements Comparable<Pelicula> {
 		else
 			System.out.println("Actor(es): ninguno");
 		System.out.println("Director: "+NombreDirector);
-		System.out.println("Numero de votos: "+ vote_count + "\n");
+		System.out.println("Numero de votos: "+ vote_count);
+		System.out.println("Compania: " + compania + "\n");
 		
 		
 		

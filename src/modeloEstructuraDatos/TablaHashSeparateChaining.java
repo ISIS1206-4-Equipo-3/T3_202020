@@ -30,6 +30,26 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 
 	private Nodo getNodo(K key){return valueList[hash(key)];}
 	private  Nodo getNodo (Integer hashKey){return valueList[hashKey];}
+	
+	public void conocerPeliculasCompania(K key)
+	{
+
+		Nodo nodo = valueList[hash(key)];
+		if(nodo==null)
+		{
+			System.out.println("No existen peliculas en ese ano por esa compania");
+		}
+		while(nodo != null)
+		{
+			Pelicula p = (Pelicula) nodo.darValor();	
+			
+			if(key.toString().startsWith(p.getCompania())) 
+			{			
+			p.imprimirPelicula();
+			}
+			nodo = nodo.darSiguiente();
+		}
+	}
 
 	/**
 	 * Este metodo solamente va a retornar el primer elemento asociado a esa llave, (Ultimo ananido).
