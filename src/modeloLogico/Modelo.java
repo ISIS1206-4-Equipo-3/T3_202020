@@ -182,14 +182,20 @@ public class Modelo {
 		}
 	}
 
+<<<<<<< HEAD
 	public void conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
 		 tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
+=======
+	public String conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
+		return tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
+		
+>>>>>>> master
 	}
 
 	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
 	{
 		tablaSeparateChaining.conocerPeliculasCompania(company_name+production_year);
-		
+		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
 	}
 	
 	
