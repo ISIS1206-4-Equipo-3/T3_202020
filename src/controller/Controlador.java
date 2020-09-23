@@ -133,7 +133,7 @@ public class Controlador {
 			}catch (Exception e) {
 				if(e.getClass().equals(java.lang.NumberFormatException.class)) view.printErrorConNumeroDeEntrada();
 				else {
-					view.printErrorDesconocido();
+				view.printErrorDesconocido();
 					
 					}
 				
