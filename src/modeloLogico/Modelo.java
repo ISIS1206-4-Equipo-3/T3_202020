@@ -182,14 +182,10 @@ public class Modelo {
 		}
 	}
 
-<<<<<<< HEAD
+
 	public void conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
 		 tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
-=======
-	public String conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
-		return tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
-		
->>>>>>> master
+
 	}
 
 	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
