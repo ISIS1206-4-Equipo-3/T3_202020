@@ -183,7 +183,6 @@ public class Modelo {
 	}
 
 	public String conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
-		
 		return tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
 		
 	}
