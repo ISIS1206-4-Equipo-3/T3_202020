@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 
-	K[] listaLlaves;
+	public K[] listaLlaves;
 	V[] listaValores;
 	int M;
 	
@@ -15,7 +15,7 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 		listaLlaves = (K[]) new Object[pCapacidadInicial];
 	}
 	
-	private int hash (K key) {return ((key.hashCode() & 0x7fffffff) % M);}
+	public int hash (K key) {return ((key.hashCode() & 0x7fffffff) % M);}
 			
 	@Override
 	public void put(K key, V value) {

@@ -62,10 +62,12 @@ public class Controlador {
 					case 1:
 						view.printMessage(" \n Conocer peliculas segun ano de produccion usando Linear Probing \n Dar ano de produccion: ");
 						int production_year = Integer.parseInt(lectura.nextLine());
-						rtaPeli = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year);
+						view.printMessage(" \n Dar nombre de la compania: ");
+						String company_name = lectura.nextLine();
+						rtaPeli = modelo.conocerPeliculasAnoProduccionLinearProbing(production_year, company_name);
 						if (!rtaPeli.isEmpty())
 						{
-							view.printMessage("Peliculas del año de produccion:  "+ production_year+ "\n"+ rtaPeli);
+							view.printMessage("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n"+ rtaPeli);
 						}
 						else
 						{

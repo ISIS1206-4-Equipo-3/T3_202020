@@ -182,14 +182,20 @@ public class Modelo {
 		}
 	}
 
-	public String conocerPeliculasAnoProduccionLinearProbing(int production_year) {
+	public String conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
 		Pelicula[] listaRespuesta = null;
 		String titulo;
 		String año;
 		String director;
 		String info = "";
+		
 		if (tablaLinearProbing.size()!=0) {
-			if (tablaLinearProbing.contains(production_year)) {
+			if (tablaLinearProbing.contains(company_name+production_year)) {
+				for (int i = 0; i <tablaLinearProbing.listaLlaves.length; i++) {
+					if (listaLlaves[i] ) {
+						
+					}
+				}
 				Pelicula peli =(Pelicula) tablaLinearProbing.get(production_year);
 				 listaRespuesta[0]=peli;
 			}
