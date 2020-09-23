@@ -194,8 +194,15 @@ public class Modelo {
 		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
 	}
 	
-	public void pruebasDeDesempeno()
+	public void pruebasDeDesempeno() throws NullPointerException
 	{
+		if(tablaLinearProbing.isEmpty() || tablaSeparateChaining.isEmpty())
+		{
+			throw new NullPointerException();
+		}
+		
+			
+			
 		System.out.println("Prueba de linear Probing, 1000 consultas, 800 existentes, 200 inexistentes");
 		String[] existentes = tablaLinearProbing.pruebaExistentes();
 		int[] inexistentes = tablaLinearProbing.pruebaInexistentes();
