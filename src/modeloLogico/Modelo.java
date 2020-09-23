@@ -131,7 +131,7 @@ public class Modelo {
 			long startTime = System.nanoTime();
 			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria)/5;
 			tablaSeparateChaining = new TablaHashSeparateChaining<String, Pelicula>(tamanoArchivoFilas);
-			System.out.println("Se ha creado una tabla de hash con manejo de colisiones linear probing de tamano " + tamanoArchivoFilas);
+			System.out.println("Se ha creado una tabla de hash con manejo de colisiones separate chaining de tamano " + tamanoArchivoFilas);
 			CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
 			archivoPrincipal = new FileReader(pRutaPrincipal);
 			archivoSecundario = new FileReader(pRutaSecundaria);
@@ -145,7 +145,11 @@ public class Modelo {
 				int numVotos = Integer.parseInt(lineaSecundaria[18]);
 				double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
 				
-
+				try
+				{
+				DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				Date lanzamiento = formato.parse(lineaSecundaria[10]);
+				
 				String director = lineaPrincipal[COLUMNA_DIRECTORES];
 				String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
 				String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
@@ -155,12 +159,14 @@ public class Modelo {
 				String compania = lineaSecundaria[8];
 				String genero = lineaSecundaria[2];
 				String titulo = lineaSecundaria[16];
-				DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-				Date lanzamiento = formato.parse(lineaSecundaria[10]);
 				Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
 				tablaSeparateChaining.put(compania+String.valueOf(lanzamiento.getYear()), anadir);
 				contador++;
-
+				}
+				catch (Exception e)
+				{
+					
+				}
 			}
 			long endTime = System.nanoTime();
 			System.out.println("Primera pelicula");
@@ -198,8 +204,9 @@ public class Modelo {
 		return info;
 	}
 
-	public void conocerPeliculasAnoProduccionSeparateChaining() {
-		// TODO Auto-generated method stub
+	public void conocerPeliculasAnoProduccionSeparateChaining() 
+	{
+		
 		
 	}
 	

@@ -33,6 +33,7 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 				datoCargado = true;
 			}
 		}
+		/* System.out.println(cantidadDeDatosPasados) */
 		if (!datoCargado) {
 			reHash();
 			put(key, value);
@@ -139,10 +140,21 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 	}
 	
 	public V darPrimerElemento() {
-		return listaValores[0];
+		for(int i =0 ; i < listaValores.length; i++)
+		{
+			if(listaValores[i] != null) return listaValores[i];
+		}
+		return listaValores[1000];
+		
+
 	}
 	public V darUltimoElemento() {
-		return listaValores[(M-1)];
+		for(int i =M-1 ; i >0; i--)
+		{
+			if(listaValores[i] != null)
+				{return listaValores[i];}
+		}
+		return listaValores[1000];
 	}
 
 
