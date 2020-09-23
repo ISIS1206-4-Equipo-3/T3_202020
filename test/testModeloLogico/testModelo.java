@@ -9,7 +9,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import modeloLogico.Modelo;
-class testModelo {
+public class testModelo {
 
 	private Modelo modelo;
 	
@@ -47,7 +47,8 @@ class testModelo {
 
 	@Test
 	void testConocerPeliculasAnoProduccionLinearProbing() {
-		fail("Not yet implemented");
+		setUp1();
+		assertNotNull(modelo.tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(inLoops2006);
 	}
 
 	@Test
