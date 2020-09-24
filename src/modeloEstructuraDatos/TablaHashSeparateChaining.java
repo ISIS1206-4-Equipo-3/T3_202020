@@ -28,7 +28,7 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		valueList[hashKey] = nuevo;
 	}
 
-	private Nodo getNodo(K key){return valueList[hash(key)];}
+	public Nodo getNodo(K key){return valueList[hash(key)];}
 	private  Nodo getNodo (Integer hashKey){return valueList[hashKey];}
 	
 	public String[] existentes()
@@ -71,7 +71,13 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 	 */
 	@Override
 	public V get(K key) {
-		return (V) getNodo(key).darValor();
+		int valorHash = hash(key);
+		Nodo aBuscar = valueList[valorHash];
+		while(aBuscar.darKey()!=key && aBuscar!=null) {
+			aBuscar = aBuscar.darSiguiente();
+		}
+		if (aBuscar==null) return null;
+		return (V) aBuscar.darValor();
 	}
 
 	/**
