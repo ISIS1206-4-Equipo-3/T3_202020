@@ -184,14 +184,16 @@ public class Modelo {
 
 
 	public void conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
-		 tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
-		 System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
+		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  ano :  "+ production_year+ "\n");
+		tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
+		 
 	}
 
 	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
 	{
+		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  ano :  "+ production_year+ "\n");
 		tablaSeparateChaining.conocerPeliculasCompania(company_name+production_year);
-		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n");
+		
 	}
 	
 	public void pruebasDeDesempeno() throws NullPointerException
@@ -235,20 +237,5 @@ public class Modelo {
 		System.out.println("Tiempo que tardo la prueba en Separate Chaining : " + (endTime2-startTime2)/1e6 + " ms \n\n");
 		System.out.println("Tiempo promedio de realizar una consulta en Separate Chaining : " + (endTime2-startTime2)/1e9 + " ms \n\n");
 	}
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
