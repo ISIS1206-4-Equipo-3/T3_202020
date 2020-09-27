@@ -13,8 +13,9 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 	 * @param pCapacidad Hace referencia a la cantidad de filas que va a tener la tabla.
 	 */
 	public TablaHashSeparateChaining(int pCapacidad) {
-		valueList = new Nodo[pCapacidad];
 		M = pCapacidad;
+		valueList = new Nodo[pCapacidad];
+		
 	}
 
 	private int hash (K key) {return ((key.hashCode() & 0x7fffffff) % M);}
