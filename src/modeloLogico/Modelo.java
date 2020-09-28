@@ -198,7 +198,10 @@ public class Modelo {
 			e.printStackTrace();
 		}
 	}
-
+	public void entenderGenero(String pGenero)
+	{
+		tablaSeparateChaining.entenderGenero(pGenero);
+	}
 
 	public void conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
 		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  ano :  "+ production_year+ "\n");

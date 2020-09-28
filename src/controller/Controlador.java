@@ -95,7 +95,9 @@ public class Controlador {
 					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
 					break;
 				case 5:
-					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
+					 view.printMessage("Escriba el nombre del genero que desea entender");
+					 String genero = lectura.nextLine();
+					 modelo.entenderGenero(genero);
 					break;
 				case 6:
 					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO

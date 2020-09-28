@@ -47,6 +47,27 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		}
 		return llaves;
 	}
+	public void entenderGenero(K key)
+	{
+		Nodo nodo = valueList[hash(key)];
+		if(nodo==null)
+		{
+			System.out.println("No existen peliculas de ese genero");
+		}
+		int contadorPeliculas = 0;
+		int contadorVotos =0;
+		while(nodo != null)
+		{
+			Pelicula p = (Pelicula) nodo.darValor();
+			System.out.println(p.getTitulo());
+			contadorPeliculas++;
+			contadorVotos+= p.getVote_count();
+			nodo = nodo.darSiguiente();
+		}
+		System.out.println("Numero de peliculas de este genero: " +contadorPeliculas);
+		int promedio = contadorVotos/contadorPeliculas;
+		System.out.println("El promedio de votos en este genero es de: " + promedio);
+	}
 	public void conocerPeliculas(K key)
 	{
 
