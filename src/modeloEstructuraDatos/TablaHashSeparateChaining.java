@@ -170,13 +170,27 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 
 	}
 	
+	/**
+	 * Este metodo retorna siempre el primer elemento que se encuentre en el primer nodo, esto significa el ultimo
+	 * elemento agregado al primero nodo no nulo.
+	 */
 	public V darPrimerElemento() {
-		return (V) valueList[0].darValor();
+		V rta = null;
+		int primerElemento = 0;
+		while(valueList[primerElemento]==null) primerElemento++;
+		Nodo act = valueList[primerElemento];
+		return (V) act.darValor();
 	}
+	
+	/**
+	 * Este metodo retorna siempre el primer elemento que se encuentre en el ultimo nodo, esto significa el ultimo
+	 * elemento agregado al ultimo nodo no nulo de la lista.
+	 */
 	public V darUltimoElemento() {
 		V rta = null;
-		Nodo act = valueList[(M-1)];
-		while(act.tieneSiguiente()) act = act.darSiguiente();
+		int ultimoElemento = M-1;
+		while(valueList[ultimoElemento]==null) ultimoElemento--;
+		Nodo act = valueList[ultimoElemento];
 		return (V) act.darValor();
 	}
 

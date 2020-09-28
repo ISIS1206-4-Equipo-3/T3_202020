@@ -12,6 +12,7 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 	K[] listaLlaves;
 	V[] listaValores;
 	int M;
+	int N;
 	
 	public TablaHashLinearProbing (int pCapacidadInicial) {
 		M = pCapacidadInicial;
@@ -23,37 +24,20 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 			
 	@Override
 	public void put(K key, V value) {
-		// TODO Auto-generated method stub
-		int hashKey = hash(key);
-		int cantidadDeDatosPasados = 0;
-		boolean datoCargado = false;
-		while(!datoCargado && (cantidadDeDatosPasados<M)) {
-			if(listaValores[hashKey]!=null) {
-				hashKey = (hashKey+1)%M;
-				cantidadDeDatosPasados ++;
-			}else {
-				listaValores[hashKey] = value;
-				listaLlaves[hashKey] = key;
-				datoCargado = true;
-			}
-		}
-		/* System.out.println(cantidadDeDatosPasados) */
-		if (!datoCargado) {
-			reHash();
-			put(key, value);
-		}
+		if (N >= M/2) reHash();  // double M (see text)
+		   int i;
+		   for (i = hash(key); listaLlaves[i] != null; i = (i + 1) % M)
+		if (listaLlaves[i].equals(key)) { listaValores[i] = value; return; } listaLlaves[i] = key;
+		listaValores[i] = value;
+		N++;
 	}
 
 	private void reHash() {
-		K[] listaAntiguaLlaves = listaLlaves;
-		V[] listaAntiguaValores = listaValores;
-		int MAntigua = M;
-		M = 2*M;
-		listaLlaves = (K[]) new Object[M];
-		listaValores = (V[]) new Object[M];
-		for (int i = 0; i<MAntigua;i++) {
-			put(listaAntiguaLlaves[i], listaAntiguaValores[i]);
-		}
+		TablaHashLinearProbing<K, V> t;
+	      t = new TablaHashLinearProbing<K, V>(M*2);
+	      for (int i = 0; i < M; i++)
+	if (listaLlaves[i] != null) t.put(listaLlaves[i], listaValores[i]);
+	      listaLlaves = t.listaLlaves; listaValores = t.listaValores; M = t.M;
 		System.out.println("Se ha realizado un rehash de la tabla con manejo de colisiones linear probing");
 	}
 
@@ -149,22 +133,22 @@ public class TablaHashLinearProbing <K, V> implements ITablaSimbolos <K, V>{
 	}
 	
 	public V darPrimerElemento() {
-		for(int i =0 ; i < listaValores.length; i++)
+		for(int i =0 ; i < N; i++)
 		{
 			if(listaValores[i] != null) return listaValores[i];
 		}
-		return listaValores[1000];
-		
-
+		return null;
 	}
+	
 	public V darUltimoElemento() {
 		for(int i =M-1 ; i >0; i--)
 		{
 			if(listaValores[i] != null)
 				{return listaValores[i];}
 		}
-		return listaValores[1000];
+		return null;
 	}
+	
 	public int[] pruebaInexistentes()
 	{
 		int[] container = new int[200];
