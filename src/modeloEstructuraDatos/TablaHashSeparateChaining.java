@@ -47,7 +47,7 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		}
 		return llaves;
 	}
-	public void conocerPeliculasCompania(K key)
+	public void conocerPeliculas(K key)
 	{
 
 		Nodo nodo = valueList[hash(key)];

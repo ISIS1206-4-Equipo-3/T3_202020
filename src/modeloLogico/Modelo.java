@@ -67,7 +67,7 @@ public class Modelo {
 
 	}
 
-	public void cargarDatosTablaHashLinearProbing(String pRutaPrincipal, String pRutaSecundaria)
+	public void cargarDatosTablaHashLinearProbing(String pRutaPrincipal, String pRutaSecundaria, int pColumna, boolean pEsArchivoPrincipal)
 	{
 		try {
 			long startTime = System.nanoTime();
@@ -87,12 +87,16 @@ public class Modelo {
 					int id = Integer.parseInt(lineaPrincipal[0]);
 					int numVotos = Integer.parseInt(lineaSecundaria[18]);
 					double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
-
+					Date lanzamiento = new Date();
 					try
 					{
 					DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-					Date lanzamiento = formato.parse(lineaSecundaria[10]);
-					
+					lanzamiento = formato.parse(lineaSecundaria[10]);
+					}
+					catch (Exception e)
+					{
+						lanzamiento = new Date(0, 0, 0);
+					}
 					String director = lineaPrincipal[COLUMNA_DIRECTORES];
 					String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
 					String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
@@ -103,15 +107,20 @@ public class Modelo {
 					String genero = lineaSecundaria[2];
 					String titulo = lineaSecundaria[16];
 					Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
-					tablaLinearProbing.put(compania+(lanzamiento.getYear()+1900), anadir);
+					if(pEsArchivoPrincipal)
+					{
+					tablaLinearProbing.put(lineaPrincipal[pColumna], anadir);
+					}
+					else
+					{
+						tablaLinearProbing.put(lineaSecundaria[pColumna], anadir);
+					}
 					contador++;
 					}
-					catch (Exception e)
-					{
-						
-					}
+					contador++;
+					
 				}
-			}
+			
 			long endTime = System.nanoTime();
 			System.out.println("Primera pelicula");
 			((Pelicula) tablaLinearProbing.darPrimerElemento()).imprimirPelicula();
@@ -126,7 +135,7 @@ public class Modelo {
 		}
 	}
 
-	public void cargarDatosTablaHashSeparateChaining(String pRutaPrincipal, String pRutaSecundaria) {
+	public void cargarDatosTablaHashSeparateChaining(String pRutaPrincipal, String pRutaSecundaria, int pColumna, boolean pEsArchivoPrincipal) {
 		try {
 			long startTime = System.nanoTime();
 			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria)/5;
@@ -144,12 +153,16 @@ public class Modelo {
 				int id = Integer.parseInt(lineaPrincipal[0]);
 				int numVotos = Integer.parseInt(lineaSecundaria[18]);
 				double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
-				
+				Date lanzamiento = new Date();
 				try
 				{
-				DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-				Date lanzamiento = formato.parse(lineaSecundaria[10]);
-				
+					DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+					lanzamiento = formato.parse(lineaSecundaria[10]);
+				}
+				catch (Exception e)
+				{
+					lanzamiento = new Date(0, 0, 0);
+				}
 				String director = lineaPrincipal[COLUMNA_DIRECTORES];
 				String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
 				String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
@@ -160,14 +173,18 @@ public class Modelo {
 				String genero = lineaSecundaria[2];
 				String titulo = lineaSecundaria[16];
 				Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
-				tablaSeparateChaining.put(compania+(lanzamiento.getYear()+1900), anadir);
+				if(pEsArchivoPrincipal)
+				{
+				tablaSeparateChaining.put(lineaPrincipal[pColumna], anadir);
+				}
+				else
+				{
+					tablaSeparateChaining.put(lineaSecundaria[pColumna], anadir);
+				}
 				contador++;
 				}
-				catch (Exception e)
-				{
-					
-				}
-			}
+
+			
 			long endTime = System.nanoTime();
 			System.out.println("Primera pelicula");
 			((Pelicula) tablaSeparateChaining.darPrimerElemento()).imprimirPelicula();
@@ -192,7 +209,7 @@ public class Modelo {
 	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
 	{
 		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  ano :  "+ production_year+ "\n");
-		tablaSeparateChaining.conocerPeliculasCompania(company_name+production_year);
+		tablaSeparateChaining.conocerPeliculas(company_name+production_year);
 		
 	}
 	
