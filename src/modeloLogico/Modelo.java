@@ -121,7 +121,6 @@ public class Modelo {
 					}
 					contador++;
 					}
-					contador++;
 					
 				}
 			
@@ -264,27 +263,18 @@ public class Modelo {
 		System.out.println("Tiempo promedio de realizar una consulta en Separate Chaining : " + (endTime2-startTime2)/1e9 + " ms \n\n");
 	}
 	
-	public void conocerActorReq3(String nombreActorABuscar) {
+	public boolean conocerActorReq3(String nombreActorABuscar) {
 		long startTime = System.nanoTime();
-		System.out.println("Se realizará la busqueda del actor "+ nombreActorABuscar + " en 5 tablas diferentes");
-		System.out.print("Buscando en la tabla #1");
-		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_1, nombreActorABuscar);
-		System.out.print("Buscando en la tabla #2");
-		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_2, nombreActorABuscar);
-		System.out.print("Buscando en la tabla #3");
-		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_3, nombreActorABuscar);
-		System.out.print("Buscando en la tabla #4");
-		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_4, nombreActorABuscar);
-		System.out.print("Buscando en la tabla #5");
-		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_5, nombreActorABuscar);	
-		System.out.println("Busqueda de actor terminada\n");
+		System.out.println("Se realizará la busqueda del actor "+ nombreActorABuscar);
+		boolean rta = conocerActorReq3buscarActorEnColumna(nombreActorABuscar);
 		long endTime = System.nanoTime();
 		System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
+		return rta;
 	}
 	
-	private void conocerActorReq3buscarActorEnColumna(int columna, String nombreActorABuscar) {
+	private boolean conocerActorReq3buscarActorEnColumna(String nombreActorABuscar) {
 		boolean rta = false;
-		cargarDatosTablaHashSeparateChaining(RUTA_DATOS_PRINCIPALES, RUTA_DATOS_SECUNDARIOS, columna, true, false);
+		cargarDatosTablaHashSeparateChainingReq3(RUTA_DATOS_PRINCIPALES, RUTA_DATOS_SECUNDARIOS, true, false);
 		Nodo nodoConPeliculas = tablaSeparateChaining.getNodo(nombreActorABuscar);
 		while(nodoConPeliculas!=null) {
 			if(nodoConPeliculas.darKey().equals(nombreActorABuscar)) {
@@ -294,10 +284,14 @@ public class Modelo {
 			}
 			nodoConPeliculas = nodoConPeliculas.darSiguiente();
 		}
-		if(!rta) System.out.println(" ----- No se encuentraron peliculas en esta tabla");
+		if(!rta) {
+			System.out.println(" ----- No se encuentraron peliculas en la base de datos");
+			return false;
+		}
+		return true;
 	}
 	
-	public void conocerPeliculasDelPaisReq5(String nombrePaisABuscar){
+	public boolean conocerPeliculasDelPaisReq5(String nombrePaisABuscar){
 		System.out.println("Buscando peliculas de " + nombrePaisABuscar);
 		boolean rta = false;
 		long startTime = System.nanoTime();
@@ -314,6 +308,72 @@ public class Modelo {
 		long endTime = System.nanoTime();
 		if(!rta) System.out.println("No se han encontrado peliculas del pais "+ nombrePaisABuscar);
 		System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
+		return rta;
 	}
 	
+	private void cargarDatosTablaHashSeparateChainingReq3(String pRutaPrincipal, String pRutaSecundaria, boolean pEsArchivoPrincipal, boolean imprimirInformacion) {
+		try {
+			long startTime = System.nanoTime();
+			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria)/1;
+			tablaSeparateChaining = new TablaHashSeparateChaining<String, Pelicula>(tamanoArchivoFilas);
+			if(imprimirInformacion) System.out.println("Se ha creado una tabla de hash con manejo de colisiones separate chaining de tamano " + tamanoArchivoFilas);
+			CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+			archivoPrincipal = new FileReader(pRutaPrincipal);
+			archivoSecundario = new FileReader(pRutaSecundaria);
+			lectorSecundario = new CSVReaderBuilder(archivoSecundario).withCSVParser(parser).build();
+			lectorPrincipal = new CSVReaderBuilder (archivoPrincipal).withCSVParser(parser).build();
+			String [] lineaPrincipal = lectorPrincipal.readNext();;
+			String [] lineaSecundaria = lectorSecundario.readNext();
+			int contador = 0;
+			while(((lineaPrincipal = lectorPrincipal.readNext())!=null) && ((lineaSecundaria = lectorSecundario.readNext())!=null)){
+				int id = Integer.parseInt(lineaPrincipal[0]);
+				int numVotos = Integer.parseInt(lineaSecundaria[18]);
+				double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
+				Date lanzamiento = new Date();
+				try
+				{
+					DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+					lanzamiento = formato.parse(lineaSecundaria[10]);
+				}
+				catch (Exception e)
+				{
+					lanzamiento = new Date(0, 0, 0);
+				}
+				String director = lineaPrincipal[COLUMNA_DIRECTORES];
+				String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
+				String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
+				String actor3 = lineaPrincipal[COLUMNA_ACTOR_3];
+				String actor4 = lineaPrincipal[COLUMNA_ACTOR_4];
+				String actor5 = lineaPrincipal[COLUMNA_ACTOR_5];
+				String compania = lineaSecundaria[8];
+				String genero = lineaSecundaria[2];
+				String titulo = lineaSecundaria[16];
+				Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero);
+				if(pEsArchivoPrincipal)
+				{
+				tablaSeparateChaining.put(actor1, anadir);
+				tablaSeparateChaining.put(actor2, anadir);
+				tablaSeparateChaining.put(actor3, anadir);
+				tablaSeparateChaining.put(actor4, anadir);
+				tablaSeparateChaining.put(actor5, anadir);
+				}
+				contador++;
+				}
+
+			
+			long endTime = System.nanoTime();
+			if(imprimirInformacion) {
+				System.out.println("Primera pelicula");
+				((Pelicula) tablaSeparateChaining.darPrimerElemento()).imprimirPelicula();
+				System.out.println("Ultima pelicula");
+				((Pelicula) tablaSeparateChaining.darUltimoElemento()).imprimirPelicula();
+				System.out.println("-------- Los datos fueron cargados correctamente ("+contador+" peliculas) --------\n");
+				System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
+
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

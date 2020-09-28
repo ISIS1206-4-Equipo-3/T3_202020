@@ -23,9 +23,14 @@ public class testModelo {
 	public void setUp2()
 	{
 		modelo = new Modelo();
-		modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 2, false);
+		modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 2, false,true);
 		
 	}
+	public void setUp3() {
+		modelo = new Modelo();
+		modelo.conocerActorReq3("Antonio Banderas");
+	}
+	
 	@Test
 	public void testModelo() {
 		setUp1();
@@ -56,5 +61,20 @@ public class testModelo {
 		setUp1();
 		assertEquals(null,modelo.tablaSeparateChaining);
 	}
+	
+	@Test
+	public void testConocerActorReq3SeparateChaining() {
+		setUp1();
+		assertEquals(true,modelo.conocerActorReq3("Tom Cruise"));
+		assertEquals(false,modelo.conocerActorReq3("Santiago Triana"));
+	}
+	
+	@Test
+	public void testConocerPaisReq5SeparateChaining() {
+		setUp1();
+		assertEquals(true,modelo.conocerPeliculasDelPaisReq5("Germany"));
+		assertEquals(false,modelo.conocerPeliculasDelPaisReq5("Santiago Triana"));
+	}
+	
 
 }

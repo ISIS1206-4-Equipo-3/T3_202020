@@ -95,10 +95,10 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 	public V get(K key) {
 		int valorHash = hash(key);
 		Nodo aBuscar = valueList[valorHash];
+		if (aBuscar==null) return null;
 		while(aBuscar.darKey()!=key && aBuscar!=null) {
 			aBuscar = aBuscar.darSiguiente();
 		}
-		if (aBuscar==null) return null;
 		return (V) aBuscar.darValor();
 	}
 
