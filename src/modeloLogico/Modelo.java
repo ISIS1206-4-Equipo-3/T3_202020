@@ -12,9 +12,11 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
+import modeloEstructuraDatos.Nodo;
 import modeloEstructuraDatos.Pelicula;
 import modeloEstructuraDatos.TablaHashLinearProbing;
 import modeloEstructuraDatos.TablaHashSeparateChaining;
+import view.View;
 
 public class Modelo {
 
@@ -27,6 +29,7 @@ public class Modelo {
 	private FileReader archivoSecundario;
 	private CSVReader lectorSecundario;
 
+	private View view;
 
 	private final static int CRITERIO_NUM_VOTOS = 1;
 	private final static int CRITERIO_PROMEDIO_VOTOS = 2;
@@ -43,12 +46,13 @@ public class Modelo {
 	private final static int COLUMNA_ACTOR_4 = 7 ;
 	private final static int COLUMNA_ACTOR_5 = 9 ;
 	private final static int COLUMNA_NUM_CALIFICACIONES = 36; 
+	private final static int COLUMNA_PAIS_PRODUCCION = 9; 
 
 	public String RUTA_DATOS_PRINCIPALES= "./data/small/MoviesCastingRaw-small.csv";
 	public String RUTA_DATOS_SECUNDARIOS= "./data/small/SmallMoviesDetailsCleaned.csv";
 
 	public Modelo() {
-
+		view = new View();
 	}
 
 	private int buscarTamanoArchivo (String pRutaPrincipal, String pRutaSecundaria) {
@@ -135,12 +139,12 @@ public class Modelo {
 		}
 	}
 
-	public void cargarDatosTablaHashSeparateChaining(String pRutaPrincipal, String pRutaSecundaria, int pColumna, boolean pEsArchivoPrincipal) {
+	public void cargarDatosTablaHashSeparateChaining(String pRutaPrincipal, String pRutaSecundaria, int pColumna, boolean pEsArchivoPrincipal, boolean imprimirInformacion) {
 		try {
 			long startTime = System.nanoTime();
-			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria)/5;
+			int tamanoArchivoFilas = buscarTamanoArchivo(pRutaPrincipal,pRutaSecundaria)/1;
 			tablaSeparateChaining = new TablaHashSeparateChaining<String, Pelicula>(tamanoArchivoFilas);
-			System.out.println("Se ha creado una tabla de hash con manejo de colisiones separate chaining de tamano " + tamanoArchivoFilas);
+			if(imprimirInformacion) System.out.println("Se ha creado una tabla de hash con manejo de colisiones separate chaining de tamano " + tamanoArchivoFilas);
 			CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
 			archivoPrincipal = new FileReader(pRutaPrincipal);
 			archivoSecundario = new FileReader(pRutaSecundaria);
@@ -186,13 +190,15 @@ public class Modelo {
 
 			
 			long endTime = System.nanoTime();
-			System.out.println("Primera pelicula");
-			((Pelicula) tablaSeparateChaining.darPrimerElemento()).imprimirPelicula();
-			System.out.println("Ultima pelicula");
-			((Pelicula) tablaSeparateChaining.darUltimoElemento()).imprimirPelicula();
-			System.out.println("-------- Los datos fueron cargados correctamente ("+contador+" peliculas) --------\n");
-			System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
+			if(imprimirInformacion) {
+				System.out.println("Primera pelicula");
+				((Pelicula) tablaSeparateChaining.darPrimerElemento()).imprimirPelicula();
+				System.out.println("Ultima pelicula");
+				((Pelicula) tablaSeparateChaining.darUltimoElemento()).imprimirPelicula();
+				System.out.println("-------- Los datos fueron cargados correctamente ("+contador+" peliculas) --------\n");
+				System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
 
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,6 +262,58 @@ public class Modelo {
 		long endTime2 = System.nanoTime();
 		System.out.println("Tiempo que tardo la prueba en Separate Chaining : " + (endTime2-startTime2)/1e6 + " ms \n\n");
 		System.out.println("Tiempo promedio de realizar una consulta en Separate Chaining : " + (endTime2-startTime2)/1e9 + " ms \n\n");
+	}
+	
+	public void conocerActorReq3(String nombreActorABuscar) {
+		long startTime = System.nanoTime();
+		System.out.println("Se realizará la busqueda del actor "+ nombreActorABuscar + " en 5 tablas diferentes");
+		System.out.print("Buscando en la tabla #1");
+		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_1, nombreActorABuscar);
+		System.out.print("Buscando en la tabla #2");
+		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_2, nombreActorABuscar);
+		System.out.print("Buscando en la tabla #3");
+		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_3, nombreActorABuscar);
+		System.out.print("Buscando en la tabla #4");
+		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_4, nombreActorABuscar);
+		System.out.print("Buscando en la tabla #5");
+		conocerActorReq3buscarActorEnColumna(COLUMNA_ACTOR_5, nombreActorABuscar);	
+		System.out.println("Busqueda de actor terminada\n");
+		long endTime = System.nanoTime();
+		System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
+	}
+	
+	private void conocerActorReq3buscarActorEnColumna(int columna, String nombreActorABuscar) {
+		boolean rta = false;
+		cargarDatosTablaHashSeparateChaining(RUTA_DATOS_PRINCIPALES, RUTA_DATOS_SECUNDARIOS, columna, true, false);
+		Nodo nodoConPeliculas = tablaSeparateChaining.getNodo(nombreActorABuscar);
+		while(nodoConPeliculas!=null) {
+			if(nodoConPeliculas.darKey().equals(nombreActorABuscar)) {
+				System.out.println("");
+				((Pelicula) nodoConPeliculas.darValor()).imprimirPelicula();
+				rta= true;
+			}
+			nodoConPeliculas = nodoConPeliculas.darSiguiente();
+		}
+		if(!rta) System.out.println(" ----- No se encuentraron peliculas en esta tabla");
+	}
+	
+	public void conocerPeliculasDelPaisReq5(String nombrePaisABuscar){
+		System.out.println("Buscando peliculas de " + nombrePaisABuscar);
+		boolean rta = false;
+		long startTime = System.nanoTime();
+		cargarDatosTablaHashSeparateChaining(RUTA_DATOS_PRINCIPALES, RUTA_DATOS_SECUNDARIOS, COLUMNA_PAIS_PRODUCCION, false, false);
+		Nodo nodoConPeliculas = tablaSeparateChaining.getNodo(nombrePaisABuscar);
+		while(nodoConPeliculas!=null) {
+			if(nodoConPeliculas.darKey().equals(nombrePaisABuscar)) {
+				System.out.println("");
+				((Pelicula) nodoConPeliculas.darValor()).imprimirPelicula();
+				rta= true;
+			}
+			nodoConPeliculas = nodoConPeliculas.darSiguiente();
+		}
+		long endTime = System.nanoTime();
+		if(!rta) System.out.println("No se han encontrado peliculas del pais "+ nombrePaisABuscar);
+		System.out.println("Tiempo que tardo la carga de datos: " + (endTime-startTime)/1e6 + " ms \n\n");
 	}
 	
 }

@@ -42,11 +42,11 @@ public class Controlador {
 						modelo.cargarDatosTablaHashLinearProbing(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 0, true);
 						break;
 					case 2:
-						modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 2, false);
+						modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 2, false, true);
 						break;
 					case 3:
 						modelo.cargarDatosTablaHashLinearProbing(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 0, true);
-						modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 2, false);
+						modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 2, false, true);
 						break;
 					case 4:
 						break;
@@ -67,11 +67,11 @@ public class Controlador {
 						modelo.conocerPeliculasAnoProduccionLinearProbing(production_year, company_name);
 						if (!rtaPeli.equals(""))
 						{
-							view.printMessage("Peliculas producidas por la compania "+ company_name + " en el  año :  "+ production_year+ "\n"+ rtaPeli);
+							view.printMessage("Peliculas producidas por la compania "+ company_name + " en el  aï¿½o :  "+ production_year+ "\n"+ rtaPeli);
 						}
 						else
 						{
-							view.printMessage("Ninguna pelicula fue producida en el año asignado");
+							view.printMessage("Ninguna pelicula fue producida en el aï¿½o asignado");
 						}							
 						break;
 					case 2:
@@ -92,15 +92,19 @@ public class Controlador {
 					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
 					break;
 				case 4:
-					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
+					view.printMessage("Escriba el nombre del actor que desea entender");
+					String actorABuscar = lectura.nextLine();
+					modelo.conocerActorReq3(actorABuscar);
 					break;
 				case 5:
-					 view.printMessage("Escriba el nombre del genero que desea entender");
-					 String genero = lectura.nextLine();
-					 modelo.entenderGenero(genero);
+					view.printMessage("Escriba el nombre del genero que desea entender");
+					String genero = lectura.nextLine();
+					modelo.entenderGenero(genero);
 					break;
 				case 6:
-					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
+					view.printMessage("Escriba el nombre del pais que desea entender");
+					String paisABuscar = lectura.nextLine();
+					modelo.conocerPeliculasDelPaisReq5(paisABuscar);
 					break;
 				case 7:
 					view.printInformacionDeCreadores();
@@ -129,7 +133,7 @@ public class Controlador {
 					break;
 				case 10:
 					try {
-					modelo.pruebasDeDesempeno();
+						modelo.pruebasDeDesempeno();
 					}
 					catch (Exception e)
 					{
@@ -146,9 +150,9 @@ public class Controlador {
 				else {
 					view.printErrorDesconocido();
 					e.printStackTrace();
-					
-					}
-				
+
+				}
+
 			}
 
 		}
