@@ -56,37 +56,9 @@ public class Controlador {
 					}
 					break;
 				case 2:
-					view.printMenuPeliculasAnoProduccion();
-					int opcionConocerPeliculasAnoProduccion = Integer.parseInt(lectura.nextLine());
-					switch(opcionConocerPeliculasAnoProduccion) {
-					case 1:
-						view.printMessage(" \n Conocer peliculas segun ano de produccion usando Linear Probing \n Dar ano de produccion: ");
-						int production_year = Integer.parseInt(lectura.nextLine());
-						view.printMessage(" \n Dar nombre de la compania: ");
-						String company_name = lectura.nextLine();
-						modelo.conocerPeliculasAnoProduccionLinearProbing(production_year, company_name);
-						if (!rtaPeli.equals(""))
-						{
-							view.printMessage("Peliculas producidas por la compania "+ company_name + " en el  a�o :  "+ production_year+ "\n"+ rtaPeli);
-						}
-						else
-						{
-							view.printMessage("Ninguna pelicula fue producida en el a�o asignado");
-						}							
-						break;
-					case 2:
-						view.printMessage(" \n Conocer peliculas segun ano de produccion usando Separate Chaining \n Dar ano de produccion: ");
-						int production_year2 = Integer.parseInt(lectura.nextLine());
-						view.printMessage(" \n Dar nombre de la compania: ");
-						String company_name2 = lectura.nextLine();
-						modelo.conocerPeliculasAnoProduccionSeparateChaining(production_year2, company_name2);
-						break;
-					case 3:
-						break;
-					default:
-						view.printErrorConRangoDeEntrada();
-						break;
-					}
+					view.printMessage(" \n Conocer peliculas de una compania \n Dar nombre de la compania de produccion: ");
+					String companyName = lectura.nextLine();
+					modelo.conocerProductoras( companyName);
 					break;
 				case 3:
 					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO

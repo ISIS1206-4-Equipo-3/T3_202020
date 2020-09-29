@@ -203,21 +203,81 @@ public class Modelo {
 			e.printStackTrace();
 		}
 	}
-	public void entenderGenero(String pGenero)
+	public boolean entenderGenero(String pGenero)
 	{
-		tablaSeparateChaining.entenderGenero(pGenero);
+		long startTime = System.nanoTime();
+		boolean resp = false;
+		try {
+		
+		int tamanoArchivoFilas = buscarTamanoArchivo(RUTA_DATOS_PRINCIPALES,RUTA_DATOS_SECUNDARIOS)/1;
+		tablaSeparateChaining = new TablaHashSeparateChaining<String, Pelicula>(tamanoArchivoFilas);
+		CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+		archivoPrincipal = new FileReader(RUTA_DATOS_PRINCIPALES);
+		archivoSecundario = new FileReader(RUTA_DATOS_SECUNDARIOS);
+		lectorSecundario = new CSVReaderBuilder(archivoSecundario).withCSVParser(parser).build();
+		lectorPrincipal = new CSVReaderBuilder (archivoPrincipal).withCSVParser(parser).build();
+		String [] lineaPrincipal = lectorPrincipal.readNext();;
+		String [] lineaSecundaria = lectorSecundario.readNext();
+		int contador = 0;
+		while(((lineaPrincipal = lectorPrincipal.readNext())!=null) && ((lineaSecundaria = lectorSecundario.readNext())!=null)){
+			int id = Integer.parseInt(lineaPrincipal[0]);
+			int numVotos = Integer.parseInt(lineaSecundaria[18]);
+			double promedioVotos = Double.parseDouble(lineaSecundaria[17]);
+			Date lanzamiento = new Date();
+			try
+			{
+				DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				lanzamiento = formato.parse(lineaSecundaria[10]);
+			}
+			catch (Exception e)
+			{
+				lanzamiento = new Date(0, 0, 0);
+			}
+			String director = lineaPrincipal[COLUMNA_DIRECTORES];
+			String actor1 = lineaPrincipal[COLUMNA_ACTOR_1];
+			String actor2 = lineaPrincipal[COLUMNA_ACTOR_2];
+			String actor3 = lineaPrincipal[COLUMNA_ACTOR_3];
+			String actor4 = lineaPrincipal[COLUMNA_ACTOR_4];
+			String actor5 = lineaPrincipal[COLUMNA_ACTOR_5];
+			String compania = lineaSecundaria[8];
+			String generos = lineaSecundaria[2];
+			String titulo = lineaSecundaria[16];
+			String[]genero = generos.split("\\|");
+			for(int i = 0; i<genero.length; i++)
+			{
+				Pelicula anadir = new Pelicula(compania, lanzamiento, titulo, id, director, numVotos, promedioVotos, actor1, actor2, actor3, actor4, actor5, genero[i]);
+				tablaSeparateChaining.put(genero[i], anadir);
+			}
+			
+			contador++;
+			}
+
+		
+		
+			
+			resp = tablaSeparateChaining.entenderGenero(pGenero);
+			long endTime = System.nanoTime();
+			if (!resp)System.out.println(" \n No existen peliculas de ese genero \n");	 
+			System.out.println("Tiempo que tardo el requerimiento: " + (endTime-startTime)/1e6 + " ms \n\n");
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+		
+		return resp;
 	}
 
-	public void conocerPeliculasAnoProduccionLinearProbing(int production_year, String company_name) {
-		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  ano :  "+ production_year+ "\n");
-		tablaLinearProbing.conocerPeliculasAnoProduccionLinearProbing(company_name+production_year);
-		 
-	}
 
-	public void conocerPeliculasAnoProduccionSeparateChaining(int production_year, String company_name) 
+	public boolean conocerProductoras( String company_name) 
 	{
-		System.out.println("Peliculas producidas por la compania "+ company_name + " en el  ano :  "+ production_year+ "\n");
-		tablaSeparateChaining.conocerPeliculas(company_name+production_year);
+		long startTime = System.nanoTime();
+		cargarDatosTablaHashSeparateChaining(RUTA_DATOS_PRINCIPALES, RUTA_DATOS_SECUNDARIOS, 8, false, false);
+		System.out.println("Peliculas producidas por la compania "+ company_name + "\n");
+		boolean resp = tablaSeparateChaining.conocerProductoras(company_name);
+		long endTime = System.nanoTime();
+		if(!resp) System.out.println("No existen peliculas producidas por esa compania" + "\n");
+		System.out.println("Tiempo que tardo el requerimiento: " + (endTime-startTime)/1e6 + " ms \n\n");
+		return resp;
 		
 	}
 	
@@ -285,7 +345,7 @@ public class Modelo {
 			nodoConPeliculas = nodoConPeliculas.darSiguiente();
 		}
 		if(!rta) {
-			System.out.println(" ----- No se encuentraron peliculas en la base de datos");
+			System.out.println(" ----- No se encontraron peliculas en la base de datos");
 			return false;
 		}
 		return true;

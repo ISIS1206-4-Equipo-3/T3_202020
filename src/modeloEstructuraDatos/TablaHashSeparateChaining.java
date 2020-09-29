@@ -47,19 +47,19 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		}
 		return llaves;
 	}
-	public void entenderGenero(K key)
+	public boolean entenderGenero(K key)
 	{
 		Nodo nodo = valueList[hash(key)];
 		if(nodo==null)
 		{
-			System.out.println("No existen peliculas de ese genero");
+			return false;
 		}
 		int contadorPeliculas = 0;
 		int contadorVotos =0;
 		while(nodo != null)
 		{
 			Pelicula p = (Pelicula) nodo.darValor();
-			System.out.println(p.getTitulo());
+			p.imprimirPelicula();
 			contadorPeliculas++;
 			contadorVotos+= p.getVote_count();
 			nodo = nodo.darSiguiente();
@@ -67,25 +67,34 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		System.out.println("Numero de peliculas de este genero: " +contadorPeliculas);
 		int promedio = contadorVotos/contadorPeliculas;
 		System.out.println("El promedio de votos en este genero es de: " + promedio);
+		return true;
 	}
-	public void conocerPeliculas(K key)
+	public boolean conocerProductoras(K key)
 	{
 
 		Nodo nodo = valueList[hash(key)];
 		if(nodo==null)
 		{
-			System.out.println("No existen peliculas en ese ano por esa compania");
+			return false;
 		}
+		int contadorPeliculas = 0; 
+		int totalCalificaciones = 0;
 		while(nodo != null)
 		{
 			Pelicula p = (Pelicula) nodo.darValor();	
 			
-			if(key.toString().startsWith(p.getCompania())) 
+			if(key.toString().equals(p.getCompania())) 
 			{			
 			p.imprimirPelicula();
+			contadorPeliculas++;
+			totalCalificaciones += p.getVote_average();
 			}
 			nodo = nodo.darSiguiente();
 		}
+		double promedio = (double)totalCalificaciones/(double)contadorPeliculas;
+		System.out.println("El numero de peliculas es de: " + contadorPeliculas);
+		System.out.println("El promedio de la calificacion de las peliculas es de " + promedio + "\n");
+		return true;
 	}
 
 	/**

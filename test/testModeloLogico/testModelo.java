@@ -50,16 +50,19 @@ public class testModelo {
 		assertNotNull(modelo.tablaSeparateChaining);
 	}
 
+	
 	@Test
-	public void testConocerPeliculasAnoProduccionLinearProbing() {
+	public void testEntenderGeneroReq4SeparateChaining()
+	{
 		setUp1();
-		assertNotNull(modelo.tablaLinearProbing);
+		assertTrue(!modelo.entenderGenero("Alejandro Alcaraz"));
+		assertTrue(modelo.entenderGenero("Drama"));
 	}
-
 	@Test
-	public void testConocerPeliculasAnoProduccionSeparateChaining() {
+	public void testConocerProductoras() {
 		setUp1();
-		assertEquals(null,modelo.tablaSeparateChaining);
+		assertTrue(modelo.conocerProductoras("Columbia Pictures"));
+		assertTrue(!modelo.conocerProductoras("Alejandro Alcaraz"));
 	}
 	
 	@Test
