@@ -31,6 +31,12 @@ public class testModelo {
 		modelo.conocerActorReq3("Antonio Banderas");
 	}
 	
+	public void setUp4() {
+		modelo = new Modelo();
+		modelo.cargarDatosTablaHashSeparateChaining(modelo.RUTA_DATOS_PRINCIPALES, modelo.RUTA_DATOS_SECUNDARIOS, 12, true ,false);
+	}
+	
+	
 	@Test
 	public void testModelo() {
 		setUp1();
@@ -79,5 +85,11 @@ public class testModelo {
 		assertEquals(false,modelo.conocerPeliculasDelPaisReq5("Santiago Triana"));
 	}
 	
-
+	@Test
+	public void testConocerDirector() {
+		setUp4();
+		assertNotEquals(false,modelo.conocerDirector("Isabel Coixet"));
+		assertEquals(false,modelo.conocerDirector("Cristiano Ronaldo"));
+	}
+ 
 }
