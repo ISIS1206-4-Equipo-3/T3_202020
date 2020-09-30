@@ -61,7 +61,9 @@ public class Controlador {
 					modelo.conocerProductoras( companyName);
 					break;
 				case 3:
-					view.printMessage("Requerimiento aun no realizado."); //ELIMINAR AL REALIZAR REQUERIMIENTO
+					view.printMessage("Escriba el nombre del director que desea conocer");
+					String director = lectura.nextLine();
+					modelo.conocerDirector(director);
 					break;
 				case 4:
 					view.printMessage("Escriba el nombre del actor que desea entender");

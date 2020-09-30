@@ -224,6 +224,35 @@ public class TablaHashSeparateChaining<K extends Comparable<K>, V extends Compar
 		return (V) act.darValor();
 	}
 
+	public boolean conocerPeliculasDirector(K key) {
+
+		Nodo nodo = valueList[hash(key)];
+		if(nodo==null)
+		{
+			return false;
+		}
+		double totalCalificaciones = 0.0;
+		int numeroPeliculas = 0; 
+		
+		while(nodo != null)
+		{
+			Pelicula prueba = (Pelicula) nodo.darValor();	
+			
+			if(key.toString().equals(prueba.getNombreDirector())) 
+			{			
+				prueba.imprimirPelicula();
+			numeroPeliculas++;
+			totalCalificaciones += prueba.getVote_average();
+			}
+			nodo = nodo.darSiguiente();
+		}
+		double pelis = (double)numeroPeliculas;
+		double promedio = (totalCalificaciones/pelis);
+		System.out.println("El numero de peliculas es de: " + numeroPeliculas);
+		System.out.println("El promedio de la calificacion de las peliculas es de " + promedio + "\n");
+		return true;
+	}
+
 	
 
 

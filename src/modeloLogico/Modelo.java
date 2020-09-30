@@ -436,4 +436,16 @@ public class Modelo {
 			e.printStackTrace();
 		}
 	}
+
+	public boolean conocerDirector(String nombreDirectorABuscar) {
+		long startTime = System.nanoTime();
+		System.out.println("Peliculas del director "+ nombreDirectorABuscar + "\n");
+		cargarDatosTablaHashSeparateChaining(RUTA_DATOS_PRINCIPALES, RUTA_DATOS_SECUNDARIOS, COLUMNA_DIRECTORES, true, false);	
+		boolean respuesta = tablaSeparateChaining.conocerPeliculasDirector(nombreDirectorABuscar);
+		long endTime = System.nanoTime();
+		if(!respuesta) System.out.println("No existen peliculas dirigidas por ese director" + "\n");
+		System.out.println("Tiempo que tardo el requerimiento: " + (endTime-startTime)/1e6 + " ms \n\n");
+		return respuesta;
+		
+	}
 }
